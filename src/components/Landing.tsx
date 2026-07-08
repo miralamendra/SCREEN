@@ -89,11 +89,8 @@ export const Landing: React.FC = () => {
               <img
                 src="picture1.png"
                 alt="SCREEN Logo"
-                className="w-36 h-36 sm:w-48 sm:h-48 object-contain drop-shadow-[0_4px_16px_rgba(0,0,0,0.5)] translate-y-8 sm:translate-y-12"
+                className="w-36 h-36 sm:w-48 sm:h-48 object-contain drop-shadow-[0_4px_16px_rgba(0,0,0,0.5)]"
               />
-              <p className="mt-0.5 translate-y-8 sm:translate-y-12 text-center text-[12px] sm:text-[13.5px] font-medium tracking-[0.04em] text-white/85 max-w-md leading-snug text-pretty">
-                Sustainable Coexistence Research & Education Network
-              </p>
             </header>
             <div className="fade-in-slow text-center flex flex-col items-center">
               <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/[0.08] backdrop-blur-md border border-white/[0.12] mb-3">
@@ -157,7 +154,9 @@ export const Landing: React.FC = () => {
 
         {/* Footer — simplified */}
         <footer className="px-6 sm:px-10 py-6 shrink-0 fade-in" style={{ animationDelay: '0.5s', opacity: 0 }}>
-          <div className="max-w-[1120px] mx-auto flex items-center justify-center text-[11px] text-white/40 tracking-wider uppercase">
+          <div className="max-w-[1120px] mx-auto flex items-center justify-center gap-2 text-[11px] text-white/40 tracking-wider uppercase">
+            <span>Sustainable Coexistence Research &amp; Education Network</span>
+            <span className="opacity-40">·</span>
             <span>© {year}</span>
           </div>
         </footer>
