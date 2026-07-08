@@ -1,0 +1,83 @@
+.line-sidebar {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.line-sidebar__item {
+  position: relative;
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+  padding: 7px 10px;
+  padding-left: calc(var(--marker-length) + var(--marker-gap) + 16px);
+  transition: background-color 0.2s ease;
+  margin-bottom: var(--item-gap);
+}
+
+.line-sidebar__item:last-child {
+  margin-bottom: 0;
+}
+
+.line-sidebar__item[aria-current="true"] {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.line-sidebar__item:hover:not([aria-current="true"]) {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.line-sidebar__label {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--font-size);
+  line-height: 1.2;
+  color: color-mix(in srgb, var(--accent-color) calc(var(--effect, 0) * 100%), var(--text-color));
+  transform: translateX(calc(var(--effect, 0) * var(--max-shift)));
+  width: 100%;
+  transition: transform var(--smoothing) ease-out;
+}
+
+.line-sidebar__index {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  margin-right: 0.5rem;
+  font-size: 0.85em;
+  opacity: calc(0.55 + var(--effect, 0) * 0.45);
+}
+
+.line-sidebar__icon {
+  color: color-mix(in srgb, var(--accent-color) calc(var(--effect, 0) * 100%), var(--text-color));
+}
+
+.line-sidebar__marker {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  height: 1px;
+  width: var(--marker-length);
+  background-color: color-mix(in srgb, var(--accent-color) calc(var(--effect, 0) * 100%), var(--marker-color));
+  transform-origin: left center;
+  transform: translateY(-50%) scaleX(calc(0.7 + var(--effect, 0) * 0.5));
+}
+
+.line-sidebar--markers .line-sidebar__item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: calc(100% + var(--item-gap) / 2);
+  left: 10px;
+  height: 1px;
+  width: calc(var(--marker-length) * var(--tick-scale));
+  background-color: var(--marker-color);
+  opacity: 0.5;
+  transform: translateY(-50%);
+}
+
+.line-sidebar--scale-tick .line-sidebar__item:not(:last-child)::after {
+  transform-origin: left center;
+  transform: translateY(-50%) scaleX(calc(0.7 + var(--effect, 0) * 0.6));
+}
