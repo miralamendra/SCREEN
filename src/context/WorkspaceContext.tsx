@@ -1,11 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { initialWorkspaceData } from '../data/initialState';
 import type { WorkspaceData, DailyLogEntry, WeeklyReflection, DeliverableItem, MeetingEvent, Role, CustomCategory } from '../data/initialState';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 interface WorkspaceContextType {
   role: Role | null;
   setRole: (role: Role | null) => void;
   data: WorkspaceData;
+  syncMode: 'synced' | 'local';
   addCategory: (name: string, color: string) => void;
   updateCategory: (id: string, name: string, color: string) => void;
   deleteCategory: (id: string) => void;
@@ -23,49 +25,146 @@ const WorkspaceContext = createContext<WorkspaceContextType | undefined>(undefin
 
 export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [role, setRoleState] = useState<Role | null>(() => {
-    return (localStorage.getItem('hec_user_role') as Role) || null;
+    try {
+      return (localStorage.getItem('hec_user_role') as Role) || null;
+    } catch (e) {
+      return null;
+    }
   });
+
+  const [syncMode, setSyncMode] = useState<'synced' | 'local'>('local');
 
   const [data, setData] = useState<WorkspaceData>(() => {
     const currentVersion = '7';
-    const savedVersion = localStorage.getItem('hec_data_version');
-    if (savedVersion !== currentVersion) {
-      localStorage.clear();
-      localStorage.setItem('hec_data_version', currentVersion);
-      return initialWorkspaceData;
-    }
-    const saved = localStorage.getItem('hec_workspace_data');
-    if (saved) {
-      try {
+    try {
+      const savedVersion = localStorage.getItem('hec_data_version');
+      if (savedVersion !== currentVersion) {
+        localStorage.clear();
+        localStorage.setItem('hec_data_version', currentVersion);
+        return initialWorkspaceData;
+      }
+      const saved = localStorage.getItem('hec_workspace_data');
+      if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed.dailyLogs && parsed.deliverables && parsed.weeklyReflections && parsed.roadmaps && parsed.meetings) {
-          // Migration for categories
           if (!parsed.categories) {
             parsed.categories = initialWorkspaceData.categories;
           }
           return parsed;
         }
-      } catch (e) {
-        // fallback
       }
+    } catch (e) {
+      // fallback
     }
     return initialWorkspaceData;
   });
 
+  // Sync to local storage for offline fallback persistence
   useEffect(() => {
-    localStorage.setItem('hec_workspace_data', JSON.stringify(data));
+    try {
+      localStorage.setItem('hec_workspace_data', JSON.stringify(data));
+    } catch (e) {
+      // ignore quota or security exceptions
+    }
   }, [data]);
+
+  // Load and sync live data from Supabase
+  useEffect(() => {
+    const client = supabase;
+    if (!isSupabaseConfigured || !client) {
+      setSyncMode('local');
+      return;
+    }
+
+    const fetchAllData = async () => {
+      try {
+        const [catsRes, logsRes, refsRes, delsRes, meetsRes] = await Promise.all([
+          client.from('categories').select('*'),
+          client.from('daily_logs').select('*'),
+          client.from('weekly_reflections').select('*'),
+          client.from('deliverables').select('*'),
+          client.from('meetings').select('*'),
+        ]);
+
+        if (catsRes.error) throw catsRes.error;
+        if (logsRes.error) throw logsRes.error;
+        if (refsRes.error) throw refsRes.error;
+        if (delsRes.error) throw delsRes.error;
+        if (meetsRes.error) throw meetsRes.error;
+
+        const weeklyReflections: WeeklyReflection[] = (refsRes.data || []).map(r => ({
+          weekId: r.week_id,
+          miralReflection: { done: r.miral_done || '', blockers: r.miral_blockers || '', next: r.miral_next || '' },
+          shaliniReflection: { done: r.shalini_done || '', blockers: r.shalini_blockers || '', next: r.shalini_next || '' },
+          supervisorComment: r.supervisor_comment || '',
+          supervisorCommentMiral: r.supervisor_comment_miral || '',
+          supervisorCommentShalini: r.supervisor_comment_shalini || '',
+          isReviewed: r.is_reviewed || false
+        }));
+
+        const deliverables: DeliverableItem[] = (delsRes.data || []).map(d => ({
+          id: d.id,
+          name: d.name,
+          dueDate: d.due_date,
+          owner: d.owner,
+          status: d.status as DeliverableItem['status'],
+          quarter: d.quarter
+        }));
+
+        const meetings: MeetingEvent[] = (meetsRes.data || []).map(m => ({
+          id: m.id,
+          date: m.date,
+          category: m.category,
+          title: m.title,
+          locationLink: m.location_link || '',
+          attendees: m.attendees || [],
+          outcome: m.outcome || ''
+        }));
+
+        setData({
+          categories: catsRes.data || [],
+          dailyLogs: logsRes.data || [],
+          weeklyReflections,
+          deliverables,
+          roadmaps: initialWorkspaceData.roadmaps,
+          meetings
+        });
+        setSyncMode('synced');
+      } catch (err) {
+        console.error('Error fetching data from Supabase:', err);
+        setSyncMode('local');
+      }
+    };
+
+    fetchAllData();
+
+    // Subscribe to Postgres changes for live cross-device synchronizations
+    const channel = client
+      .channel('schema-db-changes')
+      .on('postgres_changes', { event: '*', schema: 'public' }, () => {
+        fetchAllData();
+      })
+      .subscribe();
+
+    return () => {
+      client.removeChannel(channel);
+    };
+  }, []);
 
   const setRole = (newRole: Role | null) => {
     setRoleState(newRole);
-    if (newRole) {
-      localStorage.setItem('hec_user_role', newRole);
-    } else {
-      localStorage.removeItem('hec_user_role');
+    try {
+      if (newRole) {
+        localStorage.setItem('hec_user_role', newRole);
+      } else {
+        localStorage.removeItem('hec_user_role');
+      }
+    } catch (e) {
+      // ignore
     }
   };
 
-  const addCategory = (name: string, color: string) => {
+  const addCategory = async (name: string, color: string) => {
     const newCategory: CustomCategory = {
       id: `cat-${Date.now()}`,
       name,
@@ -75,16 +174,17 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       ...prev,
       categories: [...prev.categories, newCategory]
     }));
+    if (syncMode === 'synced' && supabase) {
+      await supabase.from('categories').insert([{ id: newCategory.id, name, color }]);
+    }
   };
 
-  const updateCategory = (id: string, name: string, color: string) => {
+  const updateCategory = async (id: string, name: string, color: string) => {
     setData(prev => ({
       ...prev,
       categories: prev.categories.map(cat => 
         cat.id === id ? { ...cat, name, color } : cat
       ),
-      // Update logs/meetings that might have used the old name if we want, but currently categories use `name` instead of `id` in logs
-      // Wait, since we store the name in logs, if they change the name, we should update the logs/meetings!
       dailyLogs: prev.dailyLogs.map(log => {
         const oldCat = prev.categories.find(c => c.id === id);
         if (oldCat && log.category === oldCat.name) {
@@ -100,16 +200,23 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         return meet;
       })
     }));
+
+    if (syncMode === 'synced' && supabase) {
+      await supabase.from('categories').update({ name, color }).eq('id', id);
+    }
   };
 
-  const deleteCategory = (id: string) => {
+  const deleteCategory = async (id: string) => {
     setData(prev => ({
       ...prev,
       categories: prev.categories.filter(cat => cat.id !== id)
     }));
+    if (syncMode === 'synced' && supabase) {
+      await supabase.from('categories').delete().eq('id', id);
+    }
   };
 
-  const addDailyLog = (log: Omit<DailyLogEntry, 'id'>) => {
+  const addDailyLog = async (log: Omit<DailyLogEntry, 'id'>) => {
     const newEntry: DailyLogEntry = {
       ...log,
       id: `log-${Date.now()}`
@@ -118,25 +225,42 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       ...prev,
       dailyLogs: [newEntry, ...prev.dailyLogs]
     }));
+    if (syncMode === 'synced' && supabase) {
+      await supabase.from('daily_logs').insert([{
+        id: newEntry.id,
+        date: log.date,
+        person: log.person,
+        category: log.category,
+        description: log.description,
+        link: log.link || null,
+        takeaway: log.takeaway || null
+      }]);
+    }
   };
 
-  const deleteDailyLog = (id: string) => {
+  const deleteDailyLog = async (id: string) => {
     setData(prev => ({
       ...prev,
       dailyLogs: prev.dailyLogs.filter(log => log.id !== id)
     }));
+    if (syncMode === 'synced' && supabase) {
+      await supabase.from('daily_logs').delete().eq('id', id);
+    }
   };
 
-  const updateDeliverableStatus = (id: string, status: DeliverableItem['status']) => {
+  const updateDeliverableStatus = async (id: string, status: DeliverableItem['status']) => {
     setData(prev => ({
       ...prev,
       deliverables: prev.deliverables.map(item => 
         item.id === id ? { ...item, status } : item
       )
     }));
+    if (syncMode === 'synced' && supabase) {
+      await supabase.from('deliverables').update({ status }).eq('id', id);
+    }
   };
 
-  const updateWeeklyReflection = (
+  const updateWeeklyReflection = async (
     weekId: string, 
     person: 'Miral' | 'Shalini', 
     section: 'done' | 'blockers' | 'next', 
@@ -177,9 +301,34 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         weeklyReflections: updatedReflections
       };
     });
+
+    if (syncMode === 'synced' && supabase) {
+      const { data: existing } = await supabase.from('weekly_reflections').select('*').eq('week_id', weekId).maybeSingle();
+      
+      const updateData: any = {};
+      if (person === 'Miral') {
+        if (section === 'done') updateData.miral_done = val;
+        else if (section === 'blockers') updateData.miral_blockers = val;
+        else if (section === 'next') updateData.miral_next = val;
+      } else {
+        if (section === 'done') updateData.shalini_done = val;
+        else if (section === 'blockers') updateData.shalini_blockers = val;
+        else if (section === 'next') updateData.shalini_next = val;
+      }
+      updateData.is_reviewed = false;
+
+      if (existing) {
+        await supabase.from('weekly_reflections').update(updateData).eq('week_id', weekId);
+      } else {
+        await supabase.from('weekly_reflections').insert([{
+          week_id: weekId,
+          ...updateData
+        }]);
+      }
+    }
   };
 
-  const addSupervisorComment = (weekId: string, comment: string, isReviewed: boolean) => {
+  const addSupervisorComment = async (weekId: string, comment: string, isReviewed: boolean) => {
     setData(prev => {
       const existingIndex = prev.weeklyReflections.findIndex(r => r.weekId === weekId);
       let updatedReflections = [...prev.weeklyReflections];
@@ -204,9 +353,22 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         weeklyReflections: updatedReflections
       };
     });
+
+    if (syncMode === 'synced' && supabase) {
+      const { data: existing } = await supabase.from('weekly_reflections').select('*').eq('week_id', weekId).maybeSingle();
+      if (existing) {
+        await supabase.from('weekly_reflections').update({ supervisor_comment: comment, is_reviewed: isReviewed }).eq('week_id', weekId);
+      } else {
+        await supabase.from('weekly_reflections').insert([{
+          week_id: weekId,
+          supervisor_comment: comment,
+          is_reviewed: isReviewed
+        }]);
+      }
+    }
   };
 
-  const addSupervisorCommentForPerson = (weekId: string, person: 'Miral' | 'Shalini', comment: string, isReviewed: boolean) => {
+  const addSupervisorCommentForPerson = async (weekId: string, person: 'Miral' | 'Shalini', comment: string, isReviewed: boolean) => {
     setData(prev => {
       const existingIndex = prev.weeklyReflections.findIndex(r => r.weekId === weekId);
       let updatedReflections = [...prev.weeklyReflections];
@@ -234,9 +396,24 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         weeklyReflections: updatedReflections
       };
     });
+
+    if (syncMode === 'synced' && supabase) {
+      const { data: existing } = await supabase.from('weekly_reflections').select('*').eq('week_id', weekId).maybeSingle();
+      const col = person === 'Miral' ? 'supervisor_comment_miral' : 'supervisor_comment_shalini';
+      
+      if (existing) {
+        await supabase.from('weekly_reflections').update({ [col]: comment, is_reviewed: isReviewed }).eq('week_id', weekId);
+      } else {
+        await supabase.from('weekly_reflections').insert([{
+          week_id: weekId,
+          [col]: comment,
+          is_reviewed: isReviewed
+        }]);
+      }
+    }
   };
 
-  const addMeeting = (meeting: Omit<MeetingEvent, 'id'>) => {
+  const addMeeting = async (meeting: Omit<MeetingEvent, 'id'>) => {
     const newMeeting: MeetingEvent = {
       ...meeting,
       id: `meet-${Date.now()}`
@@ -245,6 +422,18 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       ...prev,
       meetings: [newMeeting, ...prev.meetings]
     }));
+
+    if (syncMode === 'synced' && supabase) {
+      await supabase.from('meetings').insert([{
+        id: newMeeting.id,
+        date: meeting.date,
+        category: meeting.category,
+        title: meeting.title,
+        location_link: meeting.locationLink || null,
+        attendees: meeting.attendees,
+        outcome: meeting.outcome || null
+      }]);
+    }
   };
 
   const exportToCSV = (section: 'logs' | 'deliverables' | 'roadmap' | 'meetings') => {
@@ -312,6 +501,7 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       role,
       setRole,
       data,
+      syncMode,
       addCategory,
       updateCategory,
       deleteCategory,

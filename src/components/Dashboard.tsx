@@ -59,7 +59,7 @@ const PROFILE_META: Record<Role, {
 };
 
 export const Dashboard: React.FC = () => {
-  const { role, setRole } = useWorkspace();
+  const { role, setRole, syncMode } = useWorkspace();
   const { tab } = useParams<{ tab: string }>();
   const navigate = useNavigate();
   const location = useLocation();
@@ -297,13 +297,26 @@ export const Dashboard: React.FC = () => {
           <span className="text-[12px] text-apple-gray truncate max-w-[40vw]">
             {navItems.find(n => n.id === activeTab)?.label}
           </span>
-          <button
-            onClick={() => setPaletteOpen(true)}
-            className="text-apple-gray hover:text-white p-1.5 rounded-md hover:bg-white/[0.04] transition-colors"
-            aria-label="Search"
-          >
-            <Search size={14} />
-          </button>
+          <div className="flex items-center gap-1.5">
+            {syncMode === 'synced' ? (
+              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                Synced
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20" title="Running in local storage fallback mode">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                Local
+              </span>
+            )}
+            <button
+              onClick={() => setPaletteOpen(true)}
+              className="text-apple-gray hover:text-white p-1.5 rounded-md hover:bg-white/[0.04] transition-colors"
+              aria-label="Search"
+            >
+              <Search size={14} />
+            </button>
+          </div>
         </div>
         {mobileNavOpen && (
           <div className="border-t border-white/[0.06] bg-apple-base max-h-[70vh] overflow-y-auto">
@@ -355,6 +368,19 @@ export const Dashboard: React.FC = () => {
             <span className="text-white/95 font-medium truncate">
               {navItems.find(n => n.id === activeTab)?.label || 'Overview'}
             </span>
+            <div className="flex items-center gap-1.5 ml-3 shrink-0">
+              {syncMode === 'synced' ? (
+                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9.5px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  Synced
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9.5px] font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20" title="Running in local storage fallback mode">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                  Local Mode
+                </span>
+              )}
+            </div>
           </div>
 
           {/* Right: search trigger + new entry */}
