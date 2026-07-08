@@ -85,13 +85,13 @@ export const Landing: React.FC = () => {
         {/* Hero — takes the remaining viewport; perfectly centered */}
         <main className="flex-1 min-h-0 flex flex-col items-center justify-center px-6 sm:px-10 max-w-[1120px] mx-auto w-full py-6">
           <div className="-mt-16 sm:-mt-24 w-full flex flex-col items-center justify-center">
-            <header className="flex flex-col items-center justify-center fade-in mb-2 sm:mb-4">
+            <header className="flex flex-col items-center justify-center fade-in">
               <img
                 src="picture1.png"
                 alt="SCREEN Logo"
                 className="w-36 h-36 sm:w-48 sm:h-48 object-contain drop-shadow-[0_4px_16px_rgba(0,0,0,0.5)] translate-y-8 sm:translate-y-12"
               />
-              <p className="mt-3 sm:mt-4 text-center text-[12px] sm:text-[13.5px] font-medium tracking-[0.04em] text-white/85 max-w-md leading-relaxed text-pretty">
+              <p className="mt-1 sm:mt-1.5 text-center text-[12px] sm:text-[13.5px] font-medium tracking-[0.04em] text-white/85 max-w-md leading-snug text-pretty">
                 Sustainable Coexistence Research & Education Network
               </p>
             </header>
