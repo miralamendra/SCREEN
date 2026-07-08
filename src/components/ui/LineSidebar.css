@@ -15,7 +15,7 @@
   border-radius: 6px;
   padding: 7px 10px;
   padding-left: calc(var(--marker-length) + var(--marker-gap) + 16px);
-  transition: background-color 0.2s ease;
+  transition: background-color 0.18s ease;
   margin-bottom: var(--item-gap);
 }
 
@@ -31,6 +31,8 @@
   background-color: rgba(255, 255, 255, 0.04);
 }
 
+/* Label — JS drives the value smoothly via requestAnimationFrame.
+   No CSS transition here so JS owns the motion. */
 .line-sidebar__label {
   position: relative;
   display: inline-flex;
@@ -40,7 +42,7 @@
   color: color-mix(in srgb, var(--accent-color) calc(var(--effect, 0) * 100%), var(--text-color));
   transform: translateX(calc(var(--effect, 0) * var(--max-shift)));
   width: 100%;
-  transition: transform var(--smoothing) cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform, color;
 }
 
 .line-sidebar__index {
@@ -63,6 +65,7 @@
   background-color: color-mix(in srgb, var(--accent-color) calc(var(--effect, 0) * 100%), var(--marker-color));
   transform-origin: left center;
   transform: translateY(-50%) scaleX(calc(0.7 + var(--effect, 0) * 0.5));
+  will-change: transform, background-color;
 }
 
 .line-sidebar--markers .line-sidebar__item:not(:last-child)::after {

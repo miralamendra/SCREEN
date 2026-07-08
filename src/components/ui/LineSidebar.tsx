@@ -31,6 +31,14 @@ interface LineSidebarProps {
   scaleTick?: boolean;
   itemGap?: number;
   fontSize?: number;
+  /** Time-constant for the hover-driven effect (snappy). Default 90ms. */
+  hoverSmoothing?: number;
+  /** Time-constant for the active-item transition (smooth glide). Default 750ms. */
+  activeSmoothing?: number;
+  /**
+   * Backward-compat alias. If set and the new props are not, this is used as both.
+   * @deprecated prefer hoverSmoothing/activeSmoothing.
+   */
   smoothing?: number;
 }
 
@@ -52,31 +60,57 @@ export const LineSidebar: React.FC<LineSidebarProps> = ({
   scaleTick = true,
   itemGap = 20,
   fontSize = 14,
-  smoothing = 650,
+  hoverSmoothing,
+  activeSmoothing,
+  smoothing,
 }) => {
   const listRef = useRef<HTMLUListElement>(null);
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
-  const targetsRef = useRef<number[]>([]);
+  // Per-item target from hover (0..1) and current rendered value (0..1)
+  const hoverTargetRef = useRef<number[]>([]);
   const currentRef = useRef<number[]>([]);
+  // Per-item active value tracking — uses its own smoothing so click feels smooth
+  // while hover feels snappy.
+  const activeRef = useRef<number[]>([]);
+  const activeTargetRef = useRef<number[]>([]);
   const rafRef = useRef<number | null>(null);
   const lastRef = useRef<number>(0);
 
   const activeIndex = items.findIndex(item => item.id === activeId);
-  const activeRef = useRef<number>(activeIndex >= 0 ? activeIndex : -1);
 
+  // Resolve smoothing values with sensible fallbacks
+  const hoverTau = (hoverSmoothing ?? smoothing ?? 90) / 1000;
+  const activeTau = (activeSmoothing ?? smoothing ?? 750) / 1000;
+
+  // When activeId or items change, update the active target and snap current to follow
+  // the previous active exactly (so the new active glides in from where the old one was).
+  const lastActiveIdRef = useRef<string | undefined>(activeId);
   useEffect(() => {
-    const idx = items.findIndex(item => item.id === activeId);
-    activeRef.current = idx;
-    targetsRef.current = items.map((_, i) => (i === idx ? 1 : 0));
-    startLoop();
-  }, [activeId, items]);
+    if (lastActiveIdRef.current !== activeId) {
+      // Carry over the previous active's value into the new active's current value,
+      // so the marker slides from the old location to the new one smoothly.
+      const prevIdx = items.findIndex(item => item.id === lastActiveIdRef.current);
+      const newIdx = items.findIndex(item => item.id === activeId);
+      if (prevIdx >= 0 && newIdx >= 0 && currentRef.current[prevIdx] !== undefined) {
+        currentRef.current[newIdx] = currentRef.current[prevIdx];
+      }
+      lastActiveIdRef.current = activeId;
+    }
+    // Reset the active target to 1 for the active item, 0 for others
+    activeTargetRef.current = items.map((_, i) => (i === activeIndex ? 1 : 0));
+    // Initialize current active value if not set
+    if (activeRef.current.length !== items.length) {
+      activeRef.current = items.map((_, i) => (i === activeIndex ? 1 : 0));
+    }
+  }, [activeId, items, activeIndex]);
 
   const runFrame = useCallback(
     (now: number) => {
       const dt = Math.min((now - lastRef.current) / 1000, 0.05);
       lastRef.current = now;
-      const tau = smoothing / 1000;
-      const k = 1 - Math.exp(-dt / tau);
+
+      const kHover = 1 - Math.exp(-dt / hoverTau);
+      const kActive = 1 - Math.exp(-dt / activeTau);
 
       let moving = false;
       const itemEls = itemRefs.current;
@@ -84,18 +118,28 @@ export const LineSidebar: React.FC<LineSidebarProps> = ({
       for (let i = 0; i < itemEls.length; i++) {
         const el = itemEls[i];
         if (!el) continue;
-        const isHoverTarget = targetsRef.current[i] || 0;
-        const isActiveTarget = activeRef.current === i ? 1 : 0;
-        const target = Math.max(isHoverTarget, isActiveTarget);
 
-        const cur = currentRef.current[i] || 0;
-        const next = cur + (target - cur) * k;
-        const settled = Math.abs(target - next) < 0.0015;
-        const value = settled ? target : next;
+        // Active value glides on its own slow track
+        const activeTarget = activeTargetRef.current[i] ?? 0;
+        const activeCur = activeRef.current[i] ?? 0;
+        const activeNext = activeCur + (activeTarget - activeCur) * kActive;
+        const activeSettled = Math.abs(activeTarget - activeNext) < 0.0008;
+        const activeValue = activeSettled ? activeTarget : activeNext;
+        activeRef.current[i] = activeValue;
+        if (!activeSettled) moving = true;
 
-        currentRef.current[i] = value;
-        el.style.setProperty('--effect', value.toFixed(4));
-        if (!settled) moving = true;
+        // Hover value glides on its own snappy track
+        const hoverTarget = hoverTargetRef.current[i] ?? 0;
+        const hoverCur = currentRef.current[i] ?? 0;
+        const hoverNext = hoverCur + (hoverTarget - hoverCur) * kHover;
+        const hoverSettled = Math.abs(hoverTarget - hoverNext) < 0.0008;
+        const hoverValue = hoverSettled ? hoverTarget : hoverNext;
+        currentRef.current[i] = hoverValue;
+        if (!hoverSettled) moving = true;
+
+        // Combine: active wins over hover (it owns the slot when active)
+        const combined = Math.max(activeValue, hoverValue);
+        el.style.setProperty('--effect', combined.toFixed(4));
       }
 
       if (moving) {
@@ -104,7 +148,7 @@ export const LineSidebar: React.FC<LineSidebarProps> = ({
         rafRef.current = null;
       }
     },
-    [smoothing]
+    [hoverTau, activeTau]
   );
 
   const startLoop = useCallback(() => {
@@ -132,7 +176,7 @@ export const LineSidebar: React.FC<LineSidebarProps> = ({
         const center = elTop + elHeight / 2;
         const distance = Math.abs(pointerY - center);
         const p = Math.max(0, 1 - distance / proximityRadius);
-        targetsRef.current[i] = curveFn(p);
+        hoverTargetRef.current[i] = curveFn(p);
       }
       startLoop();
     },
@@ -140,18 +184,29 @@ export const LineSidebar: React.FC<LineSidebarProps> = ({
   );
 
   const handlePointerLeave = useCallback(() => {
-    targetsRef.current = targetsRef.current.map(() => 0);
+    hoverTargetRef.current = hoverTargetRef.current.map(() => 0);
     startLoop();
   }, [startLoop]);
 
   useEffect(() => {
-    targetsRef.current = items.map((_, i) => (activeRef.current === i ? 1 : 0));
-    currentRef.current = items.map((_, i) => (activeRef.current === i ? 1 : 0));
+    // Initialize target/current arrays
+    if (hoverTargetRef.current.length !== items.length) {
+      hoverTargetRef.current = items.map(() => 0);
+    }
+    if (currentRef.current.length !== items.length) {
+      currentRef.current = items.map(() => 0);
+    }
+    if (activeRef.current.length !== items.length) {
+      activeRef.current = items.map((_, i) => (i === activeIndex ? 1 : 0));
+    }
+    if (activeTargetRef.current.length !== items.length) {
+      activeTargetRef.current = items.map((_, i) => (i === activeIndex ? 1 : 0));
+    }
     startLoop();
     return () => {
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     };
-  }, [items, startLoop]);
+  }, [items, startLoop, activeIndex]);
 
   const cssVars = {
     '--accent-color': accentColor,
@@ -163,7 +218,10 @@ export const LineSidebar: React.FC<LineSidebarProps> = ({
     '--max-shift': `${maxShift}px`,
     '--item-gap': `${itemGap}px`,
     '--font-size': `${fontSize}px`,
-    '--smoothing': `${smoothing}ms`,
+    // Used by CSS for the hover-driven label transition only.
+    '--smoothing': `${Math.round(hoverTau * 1000)}ms`,
+    // Used for the active-driven transform (smooth glide on click).
+    '--active-smoothing': `${Math.round(activeTau * 1000)}ms`,
   } as React.CSSProperties;
 
   return (

@@ -152,7 +152,7 @@ export const Dashboard: React.FC = () => {
           scaleTick={true}
           itemGap={8}
           fontSize={13}
-          smoothing={650}
+          hoverSmoothing={90} activeSmoothing={750}
         />
       </div>
     );
