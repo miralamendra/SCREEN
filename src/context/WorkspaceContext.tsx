@@ -92,6 +92,10 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         if (delsRes.error) throw delsRes.error;
         if (meetsRes.error) throw meetsRes.error;
 
+        console.log('Supabase Connected Successfully.');
+        console.log('Fetched Deliverables count:', delsRes.data?.length, delsRes.data);
+        console.log('Fetched Categories count:', catsRes.data?.length, catsRes.data);
+
         const weeklyReflections: WeeklyReflection[] = (refsRes.data || []).map(r => ({
           weekId: r.week_id,
           miralReflection: { done: r.miral_done || '', blockers: r.miral_blockers || '', next: r.miral_next || '' },
