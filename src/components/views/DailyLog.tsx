@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useWorkspace } from '../../context/WorkspaceContext';
-import { Plus, Trash2, ExternalLink, Calendar, FileText } from 'lucide-react';
+import { Plus, Trash2, ExternalLink, Calendar, FileText, Pencil, X, Check } from 'lucide-react';
 import { useToast } from '../ui/Toast';
 import { ManageCategoriesModal } from '../ui/ManageCategoriesModal';
 import { SegmentedControl } from '../ui/SegmentedControl';
@@ -42,7 +42,7 @@ interface DailyLogProps {
 }
 
 export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
-  const { role, data, addDailyLog, deleteDailyLog } = useWorkspace();
+  const { role, data, addDailyLog, deleteDailyLog, updateDailyLog } = useWorkspace();
   const { push } = useToast();
   const { dailyLogs, categories } = data;
 
@@ -56,6 +56,12 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
   const [link, setLink] = useState('');
   const [takeaway, setTakeaway] = useState('');
   const [date, setDate] = useState(todayStr());
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editDescription, setEditDescription] = useState('');
+  const [editCategory, setEditCategory] = useState('');
+  const [editLink, setEditLink] = useState('');
+  const [editTakeaway, setEditTakeaway] = useState('');
+  const [editDate, setEditDate] = useState('');
   const promptRef = useRef<HTMLButtonElement>(null);
 
   const activePerson = role === 'shalini' ? 'Shalini' : 'Miral';
@@ -133,8 +139,45 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
   };
 
   const handleDelete = (id: string) => {
+    if (editingId === id) {
+      cancelEdit();
+    }
     deleteDailyLog(id);
     push('Log entry deleted', 'info');
+  };
+
+  const startEdit = (log: (typeof myLogs)[0]) => {
+    setEditingId(log.id);
+    setEditDescription(log.description);
+    setEditCategory(log.category);
+    setEditLink(log.link || '');
+    setEditTakeaway(log.takeaway || '');
+    setEditDate(log.date);
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditDescription('');
+    setEditCategory('');
+    setEditLink('');
+    setEditTakeaway('');
+    setEditDate('');
+  };
+
+  const saveEdit = (id: string) => {
+    if (!editDescription.trim()) {
+      push('Description cannot be empty', 'error');
+      return;
+    }
+    updateDailyLog(id, {
+      date: editDate,
+      category: editCategory,
+      description: editDescription.trim(),
+      link: editLink.trim() || undefined,
+      takeaway: editTakeaway.trim() || undefined
+    });
+    push('Log entry updated');
+    cancelEdit();
   };
 
   const groupedLogs = useMemo(() => {
@@ -152,72 +195,183 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
   const todayLogs = myLogs.filter(l => l.date === todayDate);
   const todayCount = todayLogs.length;
 
-  const renderLogCard = (log: (typeof myLogs)[0]) => (
-    <div
-      key={log.id}
-      className="group relative rounded-lg border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/[0.1] p-4 transition-colors"
-    >
-      <div className="flex items-start gap-3">
-        <div 
-          className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" 
-          style={{ backgroundColor: categories.find(c => c.name === log.category)?.color || '#9ca3af' }} 
-        />
-        <div className="flex-1 min-w-0">
-          <p className="text-[14.5px] text-white font-medium leading-relaxed">
-            {log.description}
-          </p>
+  const renderLogCard = (log: (typeof myLogs)[0]) => {
+    const isEditing = editingId === log.id;
+    return (
+      <div
+        key={log.id}
+        className="group relative rounded-lg border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/[0.1] p-4 transition-colors"
+      >
+        {!isEditing ? (
+          <div className="flex items-start gap-3">
+            <div 
+              className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" 
+              style={{ backgroundColor: categories.find(c => c.name === log.category)?.color || '#9ca3af' }} 
+            />
+            <div className="flex-1 min-w-0">
+              <p className="text-[14.5px] text-white font-medium leading-relaxed">
+                {log.description}
+              </p>
 
-          <div className="flex items-center gap-2 mt-2.5 flex-wrap">
-            {role === 'supervisor' && (
-              <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-md border border-white/10 bg-white/[0.05] text-apple-secondary uppercase tracking-[0.06em]">
-                {log.person}
-              </span>
-            )}
-            <span
-              className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-md border uppercase tracking-[0.06em]"
-              style={{ 
-                color: categories.find(c => c.name === log.category)?.color || '#9ca3af',
-                borderColor: categories.find(c => c.name === log.category)?.color || '#9ca3af',
-                backgroundColor: (categories.find(c => c.name === log.category)?.color || '#9ca3af') + '1A'
-              }}
-            >
-              {log.category}
-            </span>
-            {log.link && (
-              <a
-                href={log.link}
-                target="_blank"
-                rel="noreferrer"
-                className="text-[11.5px] text-white/70 hover:text-white inline-flex items-center gap-1 transition-colors"
-              >
-                <ExternalLink size={10} />
-                <span>Open link</span>
-              </a>
+              <div className="flex items-center gap-2 mt-2.5 flex-wrap">
+                {role === 'supervisor' && (
+                  <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-md border border-white/10 bg-white/[0.05] text-apple-secondary uppercase tracking-[0.06em]">
+                    {log.person}
+                  </span>
+                )}
+                <span
+                  className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-md border uppercase tracking-[0.06em]"
+                  style={{ 
+                    color: categories.find(c => c.name === log.category)?.color || '#9ca3af',
+                    borderColor: categories.find(c => c.name === log.category)?.color || '#9ca3af',
+                    backgroundColor: (categories.find(c => c.name === log.category)?.color || '#9ca3af') + '1A'
+                  }}
+                >
+                  {log.category}
+                </span>
+                {log.link && (
+                  <a
+                    href={log.link}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-[11.5px] text-white/70 hover:text-white inline-flex items-center gap-1 transition-colors"
+                  >
+                    <ExternalLink size={10} />
+                    <span>Open link</span>
+                  </a>
+                )}
+              </div>
+
+              {log.takeaway && (
+                <div className="mt-3 pl-3 border-l-2 border-emerald-400/30">
+                  <p className="text-[12.5px] text-white/80 leading-relaxed italic">
+                    {log.takeaway}
+                  </p>
+                </div>
+              )}
+            </div>
+            {role !== 'supervisor' && (
+              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                <button
+                  onClick={() => startEdit(log)}
+                  className="p-1.5 text-apple-tertiary hover:text-emerald-400/90 rounded-md hover:bg-white/[0.04] transition-colors"
+                  aria-label="Edit log"
+                >
+                  <Pencil size={12} />
+                </button>
+                <button
+                  onClick={() => handleDelete(log.id)}
+                  className="p-1.5 text-apple-tertiary hover:text-red-400/90 rounded-md hover:bg-white/[0.04] transition-colors"
+                  aria-label="Delete log"
+                >
+                  <Trash2 size={12} />
+                </button>
+              </div>
             )}
           </div>
-
-          {log.takeaway && (
-            <div className="mt-3 pl-3 border-l-2 border-emerald-400/30">
-              <p className="text-[12.5px] text-white/80 leading-relaxed italic">
-                {log.takeaway}
+        ) : (
+          <div className="space-y-3 fade-in">
+            <div className="flex items-center gap-2 pb-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <p className="text-[10.5px] font-medium tracking-[0.18em] uppercase text-white/85">
+                Editing entry
               </p>
             </div>
-          )}
-        </div>
-        {role !== 'supervisor' && (
-          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-            <button
-              onClick={() => handleDelete(log.id)}
-              className="p-1.5 text-apple-tertiary hover:text-red-400/90 rounded-md hover:bg-white/[0.04] transition-colors"
-              aria-label="Delete log"
-            >
-              <Trash2 size={12} />
-            </button>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-[10.5px] font-semibold tracking-[0.08em] uppercase text-white/80 mb-1.5">
+                  Date
+                </label>
+                <input
+                  type="date"
+                  required
+                  value={editDate}
+                  onChange={e => setEditDate(e.target.value)}
+                  className="w-full px-3 py-2 bg-white/[0.04] border border-white/[0.08] rounded-md text-[13.5px] text-white/95 focus:border-white/[0.2] focus:bg-white/[0.06] transition-colors outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-[10.5px] font-semibold tracking-[0.08em] uppercase text-white/80 mb-1.5">
+                  Category
+                </label>
+                <select
+                  required
+                  value={editCategory}
+                  onChange={e => setEditCategory(e.target.value)}
+                  className="w-full px-3 py-2 bg-white/[0.04] border border-white/[0.08] rounded-md text-[13.5px] text-white/95 focus:border-white/[0.2] focus:bg-white/[0.06] transition-colors outline-none cursor-pointer"
+                >
+                  {categories.map(c => (
+                    <option key={c.id} value={c.name} className="bg-apple-surface text-white">
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-[10.5px] font-semibold tracking-[0.08em] uppercase text-white/80 mb-1.5">
+                Description
+              </label>
+              <textarea
+                rows={3}
+                required
+                value={editDescription}
+                onChange={e => setEditDescription(e.target.value)}
+                className="w-full px-3.5 py-2.5 bg-white/[0.04] border border-white/[0.08] rounded-lg text-[14px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] focus:bg-white/[0.06] transition-colors outline-none resize-none leading-relaxed"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-[10.5px] font-semibold tracking-[0.08em] uppercase text-white/80 mb-1.5">
+                  Reference Link <span className="text-apple-tertiary font-normal normal-case tracking-normal">· optional</span>
+                </label>
+                <input
+                  type="url"
+                  value={editLink}
+                  onChange={e => setEditLink(e.target.value)}
+                  className="w-full px-3 py-2 bg-white/[0.04] border border-white/[0.08] rounded-md text-[13.5px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] focus:bg-white/[0.06] transition-colors outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-[10.5px] font-semibold tracking-[0.08em] uppercase text-white/80 mb-1.5">
+                  Takeaway <span className="text-apple-tertiary font-normal normal-case tracking-normal">· optional</span>
+                </label>
+                <input
+                  type="text"
+                  value={editTakeaway}
+                  onChange={e => setEditTakeaway(e.target.value)}
+                  className="w-full px-3 py-2 bg-white/[0.04] border border-white/[0.08] rounded-md text-[13.5px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] focus:bg-white/[0.06] transition-colors outline-none"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2 border-t border-white/[0.04]">
+              <button
+                type="button"
+                onClick={cancelEdit}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[12px] text-apple-secondary hover:text-white/85 rounded-md hover:bg-white/[0.04] transition-colors"
+              >
+                <X size={12} />
+                <span>Cancel</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => saveEdit(log.id)}
+                disabled={!editDescription.trim()}
+                className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-white text-apple-base rounded-md text-[12.5px] font-semibold hover:bg-white/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Check size={12} />
+                <span>Save changes</span>
+              </button>
+            </div>
           </div>
         )}
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div className="fade-in space-y-8">
@@ -524,5 +678,3 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
     </div>
   );
 };
-
-

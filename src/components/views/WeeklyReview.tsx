@@ -21,6 +21,16 @@ const getWeekEnding = (date: Date = new Date()): Date => {
   return end;
 };
 
+// Returns the ISO 8601 week id (e.g., "2026-W28") for a given date.
+const getISOWeekId = (date: Date): string => {
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const dayNum = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  const weekNum = Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
+  return `${d.getUTCFullYear()}-W${String(weekNum).padStart(2, '0')}`;
+};
+
 const fmtRange = (start: Date, end: Date) => {
   const sameMonth = start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear();
   const startStr = start.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
@@ -49,18 +59,29 @@ export const WeeklyReview: React.FC = () => {
   const isSupervisor = role === 'supervisor';
   const researcher: 'Miral' | 'Shalini' = role === 'shalini' ? 'Shalini' : 'Miral';
 
-  // The current reflection (researchers see their own; supervisor sees combined view)
+  // The current reflection — lookup by ISO weekId of the current week.
+  const currentWeekId = useMemo(() => getISOWeekId(weekStart), [weekStart]);
+
   const myReflection = useMemo(
-    () =>
-      weeklyReflections[0] || {
-        weekId: '',
+    () => {
+      const found = weeklyReflections.find(r => r.weekId === currentWeekId);
+      if (found) return found;
+      // Fallback: pick the most recent reflection that's not empty
+      const filled = weeklyReflections.find(r =>
+        (r.miralReflection?.done || r.miralReflection?.blockers || r.miralReflection?.next ||
+         r.shaliniReflection?.done || r.shaliniReflection?.blockers || r.shaliniReflection?.next ||
+         r.supervisorCommentMiral || r.supervisorCommentShalini || r.supervisorComment)
+      );
+      return filled || weeklyReflections[0] || {
+        weekId: currentWeekId,
         miralReflection: { done: '', blockers: '', next: '' },
         shaliniReflection: { done: '', blockers: '', next: '' },
         isReviewed: false,
         supervisorCommentMiral: '',
         supervisorCommentShalini: ''
-      },
-    [weeklyReflections]
+      };
+    },
+    [weeklyReflections, currentWeekId]
   );
 
   // Sync textarea states to persisted comments ONLY when not actively editing.
@@ -77,15 +98,13 @@ export const WeeklyReview: React.FC = () => {
     section: 'done' | 'blockers' | 'next',
     val: string
   ) => {
-    const weekId = `${weekStart.getFullYear()}-${String(weekStart.getMonth() + 1).padStart(2, '0')}-${String(weekStart.getDate()).padStart(2, '0')}`;
-    updateWeeklyReflection(weekId, person, section, val);
+    updateWeeklyReflection(currentWeekId, person, section, val);
     setSavedAt(new Date());
   };
 
   const handleSupervisorSubmitForPerson = (person: 'Miral' | 'Shalini') => {
-    const weekId = `${weekStart.getFullYear()}-${String(weekStart.getMonth() + 1).padStart(2, '0')}-${String(weekStart.getDate()).padStart(2, '0')}`;
     const comment = person === 'Miral' ? supervisorCommentMiral : supervisorCommentShalini;
-    addSupervisorCommentForPerson(weekId, person, comment, true);
+    addSupervisorCommentForPerson(currentWeekId, person, comment, true);
     setSavedAt(new Date());
     if (person === 'Miral') {
       setIsEditingMiral(false);

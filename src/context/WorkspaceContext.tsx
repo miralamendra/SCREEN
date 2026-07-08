@@ -13,6 +13,7 @@ interface WorkspaceContextType {
   deleteCategory: (id: string) => void;
   addDailyLog: (log: Omit<DailyLogEntry, 'id'>) => void;
   deleteDailyLog: (id: string) => void;
+  updateDailyLog: (id: string, log: Partial<Omit<DailyLogEntry, 'id'>>) => void;
   updateDeliverableStatus: (id: string, status: DeliverableItem['status']) => void;
   updateWeeklyReflection: (weekId: string, person: 'Miral' | 'Shalini', section: 'done' | 'blockers' | 'next', val: string) => void;
   addSupervisorComment: (weekId: string, comment: string, isReviewed: boolean) => void;
@@ -35,7 +36,7 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [syncMode, setSyncMode] = useState<'synced' | 'local'>('local');
 
   const [data, setData] = useState<WorkspaceData>(() => {
-    const currentVersion = '7';
+    const currentVersion = '8';
     try {
       const savedVersion = localStorage.getItem('hec_data_version');
       if (savedVersion !== currentVersion) {
@@ -249,6 +250,25 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }));
     if (syncMode === 'synced' && supabase) {
       await supabase.from('daily_logs').delete().eq('id', id);
+    }
+  };
+
+  const updateDailyLog = async (id: string, log: Partial<Omit<DailyLogEntry, 'id'>>) => {
+    setData(prev => ({
+      ...prev,
+      dailyLogs: prev.dailyLogs.map(entry =>
+        entry.id === id ? { ...entry, ...log } : entry
+      )
+    }));
+    if (syncMode === 'synced' && supabase) {
+      const updateData: any = {};
+      if (log.date !== undefined) updateData.date = log.date;
+      if (log.person !== undefined) updateData.person = log.person;
+      if (log.category !== undefined) updateData.category = log.category;
+      if (log.description !== undefined) updateData.description = log.description;
+      if (log.link !== undefined) updateData.link = log.link || null;
+      if (log.takeaway !== undefined) updateData.takeaway = log.takeaway || null;
+      await supabase.from('daily_logs').update(updateData).eq('id', id);
     }
   };
 
@@ -511,6 +531,7 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       deleteCategory,
       addDailyLog,
       deleteDailyLog,
+      updateDailyLog,
       updateDeliverableStatus,
       updateWeeklyReflection,
       addSupervisorComment,

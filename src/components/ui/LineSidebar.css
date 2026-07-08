@@ -40,7 +40,7 @@
   color: color-mix(in srgb, var(--accent-color) calc(var(--effect, 0) * 100%), var(--text-color));
   transform: translateX(calc(var(--effect, 0) * var(--max-shift)));
   width: 100%;
-  transition: transform var(--smoothing) ease-out;
+  transition: transform var(--smoothing) cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .line-sidebar__index {
