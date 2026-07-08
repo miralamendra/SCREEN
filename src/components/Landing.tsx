@@ -89,9 +89,9 @@ export const Landing: React.FC = () => {
               <img
                 src="picture1.png"
                 alt="SCREEN Logo"
-                className="w-36 h-36 sm:w-48 sm:h-48 object-contain drop-shadow-[0_4px_16px_rgba(0,0,0,0.5)] translate-y-8 sm:translate-y-12"
+                className="w-36 h-36 sm:w-48 sm:h-48 object-contain drop-shadow-[0_4px_16px_rgba(0,0,0,0.5)]"
               />
-              <p className="mt-1 sm:mt-1.5 text-center text-[12px] sm:text-[13.5px] font-medium tracking-[0.04em] text-white/85 max-w-md leading-snug text-pretty">
+              <p className="mt-0.5 text-center text-[12px] sm:text-[13.5px] font-medium tracking-[0.04em] text-white/85 max-w-md leading-snug text-pretty">
                 Sustainable Coexistence Research & Education Network
               </p>
             </header>
