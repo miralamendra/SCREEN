@@ -91,6 +91,9 @@ export const Landing: React.FC = () => {
                 alt="SCREEN Logo"
                 className="w-36 h-36 sm:w-48 sm:h-48 object-contain drop-shadow-[0_4px_16px_rgba(0,0,0,0.5)] translate-y-8 sm:translate-y-12"
               />
+              <p className="mt-16 sm:mt-20 text-center text-[12px] sm:text-[13.5px] font-medium tracking-[0.04em] text-white/85 max-w-md leading-relaxed text-pretty">
+                Sustainable Coexistence Research & Education Network
+              </p>
             </header>
             <div className="fade-in-slow text-center flex flex-col items-center">
               <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/[0.08] backdrop-blur-md border border-white/[0.12] mb-3">
