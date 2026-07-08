@@ -89,7 +89,7 @@ export const Landing: React.FC = () => {
               <img
                 src="picture1.png"
                 alt="SCREEN Logo"
-                className="w-36 h-36 sm:w-48 sm:h-48 object-contain drop-shadow-[0_4px_16px_rgba(0,0,0,0.5)]"
+                className="w-36 h-36 sm:w-48 sm:h-48 object-contain drop-shadow-[0_4px_16px_rgba(0,0,0,0.5)] translate-y-8 sm:translate-y-12"
               />
             </header>
             <div className="fade-in-slow text-center flex flex-col items-center">
