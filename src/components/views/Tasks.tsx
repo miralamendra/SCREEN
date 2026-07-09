@@ -320,15 +320,15 @@ const TaskGroup: React.FC<TaskGroupProps> = ({
               return (
                 <div 
                   key={task.id} 
-                  className={`group flex items-center gap-3 px-4 py-2.5 hover:bg-white/[0.03] transition-colors cursor-pointer ${index !== tasks.length - 1 || isAdding ? 'border-b border-white/[0.03]' : ''}`}
+                  className={`group flex items-start gap-3 px-4 py-3 hover:bg-white/[0.03] transition-colors cursor-pointer ${index !== tasks.length - 1 || isAdding ? 'border-b border-white/[0.03]' : ''}`}
                   onClick={() => onTaskClick(task)}
                 >
-                  <div className="flex-shrink-0 w-16 text-[11.5px] font-mono text-apple-tertiary group-hover:text-apple-secondary transition-colors">
+                  <div className="flex-shrink-0 w-16 text-[11.5px] font-mono text-apple-tertiary group-hover:text-apple-secondary transition-colors pt-[2px]">
                     {task.identifier}
                   </div>
                   
                   <div 
-                    className="relative group/status flex-shrink-0 cursor-pointer"
+                    className="relative group/status flex-shrink-0 cursor-pointer pt-[2px]"
                     onClick={e => e.stopPropagation()}
                   >
                     <StatusIcon status={task.status} />
@@ -342,13 +342,13 @@ const TaskGroup: React.FC<TaskGroupProps> = ({
                     </select>
                   </div>
                   
-                  <div className="flex-1 min-w-0 flex items-center gap-2">
-                    <span className={`text-[13px] font-medium truncate ${task.status === 'Done' || task.status === 'Canceled' ? 'text-apple-tertiary line-through decoration-white/20' : 'text-white/90'}`}>
+                  <div className="flex-1 min-w-0">
+                    <span className={`text-[13px] font-medium leading-relaxed block whitespace-normal break-words ${task.status === 'Done' || task.status === 'Canceled' ? 'text-apple-tertiary line-through decoration-white/20' : 'text-white/90'}`}>
                       {task.title}
                     </span>
                   </div>
                   
-                  <div className="flex-shrink-0 flex items-center gap-2">
+                   <div className="flex-shrink-0 flex items-center gap-2 pt-[2px]">
                     {task.priority && task.priority !== 'No priority' && (
                       <PriorityBadge priority={task.priority} />
                     )}
@@ -377,12 +377,12 @@ const TaskGroup: React.FC<TaskGroupProps> = ({
                   </div>
                   
                   {task.date && (
-                    <div className="flex-shrink-0 w-16 text-right text-[11px] text-apple-tertiary whitespace-nowrap">
+                    <div className="flex-shrink-0 w-16 text-right text-[11px] text-apple-tertiary whitespace-nowrap pt-[2px]">
                       {new Date(task.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                     </div>
                   )}
                   
-                  <div className="flex-shrink-0 ml-2" title={task.assignee}>
+                  <div className="flex-shrink-0 ml-2 pt-[2px]" title={task.assignee}>
                     <Avatar name={task.assignee} size="xs" />
                   </div>
 
@@ -391,7 +391,7 @@ const TaskGroup: React.FC<TaskGroupProps> = ({
                       e.stopPropagation();
                       onDeleteTask(task.id);
                     }}
-                    className="opacity-0 group-hover:opacity-100 p-1 text-apple-secondary hover:text-red-400 hover:bg-red-400/10 rounded transition-all ml-1 shrink-0"
+                    className="opacity-0 group-hover:opacity-100 p-1 text-apple-secondary hover:text-red-400 hover:bg-red-400/10 rounded transition-all ml-1 shrink-0 mt-[2px]"
                     title="Delete task"
                   >
                     <Trash2 size={13} />
