@@ -573,7 +573,7 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
           </div>
           <p className="text-[14px] text-white/90 font-medium">No logs recorded yet</p>
           <p className="text-[12.5px] text-apple-secondary mt-1 max-w-xs">
-            A daily log is your research journal. Start with one line — what did you work on today?
+            A daily log is your research journal. Start with one line - what did you work on today?
           </p>
         </div>
       ) : (

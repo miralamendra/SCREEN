@@ -281,40 +281,50 @@ export const WeeklyReview: React.FC = () => {
         </div>
       </div>
 
-      {/* Day-from-to header — large, clear, unambiguous */}
-      <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 sm:px-5 py-3.5 flex items-center gap-3 sm:gap-5 flex-wrap">
-        <div className="flex items-center gap-3 sm:gap-5 flex-1 min-w-0">
+      {/* Day-from-to header - large, clear, unambiguous */}
+      <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 sm:px-5 py-3 flex items-center justify-between flex-wrap gap-3">
+        <div className="flex items-center gap-5 sm:gap-6 flex-wrap">
+          {/* Start Date */}
           <div className="flex flex-col">
-            <span className="text-[10px] font-semibold tracking-[0.18em] uppercase text-apple-tertiary leading-none">
-              Day from
+            <span className="text-[9.5px] font-semibold tracking-[0.18em] uppercase text-apple-secondary leading-none mb-2">
+              Start
             </span>
-            <span className="text-[15px] sm:text-[16px] font-semibold text-white tracking-tight mt-1.5">
+            <span className="text-[14.5px] sm:text-[15.5px] font-semibold text-white tracking-tight">
               {fullRange.startStr}
             </span>
           </div>
-          <div className="text-apple-tertiary/60 self-center text-[18px] font-light">→</div>
+          
+          {/* Separator - aligned with values */}
+          <div className="flex flex-col justify-end h-8 pb-0.5 text-apple-secondary/60 text-[13.5px]">
+            <span>-</span>
+          </div>
+
+          {/* End Date */}
           <div className="flex flex-col">
-            <span className="text-[10px] font-semibold tracking-[0.18em] uppercase text-apple-tertiary leading-none">
-              Day to
+            <span className="text-[9.5px] font-semibold tracking-[0.18em] uppercase text-apple-secondary leading-none mb-2">
+              End
             </span>
-            <span className="text-[15px] sm:text-[16px] font-semibold text-white tracking-tight mt-1.5">
+            <span className="text-[14.5px] sm:text-[15.5px] font-semibold text-white tracking-tight">
               {fullRange.endStr}
             </span>
           </div>
-          <div className="hidden sm:block w-px h-8 bg-white/[0.06]" />
+
+          {/* Divider */}
+          <div className="hidden sm:block w-px h-8 bg-white/[0.06] self-center mx-1" />
+
+          {/* Year */}
           <div className="flex flex-col">
-            <span className="text-[10px] font-semibold tracking-[0.18em] uppercase text-apple-tertiary leading-none">
+            <span className="text-[9.5px] font-semibold tracking-[0.18em] uppercase text-apple-secondary leading-none mb-2">
               Year
             </span>
-            <span className="text-[15px] sm:text-[16px] font-semibold text-white tracking-tight mt-1.5 tabular-nums">
+            <span className="text-[14.5px] sm:text-[15.5px] font-semibold text-white tracking-tight tabular-nums">
               {fullRange.year}
             </span>
           </div>
         </div>
-        <div className="flex items-center gap-1.5 shrink-0">
-          <span className="text-[10px] font-mono text-apple-tertiary uppercase tracking-[0.12em]">
-            7 days · {weekStart.toLocaleDateString(undefined, { month: 'short' })}
-          </span>
+
+        <div className="flex items-center gap-1.5 text-[10.5px] font-mono text-apple-secondary uppercase tracking-[0.12em] bg-white/[0.03] px-2.5 py-1 rounded-md border border-white/[0.05] shrink-0">
+          7 days · {weekStart.toLocaleDateString(undefined, { month: 'short' })}
         </div>
       </div>
 
