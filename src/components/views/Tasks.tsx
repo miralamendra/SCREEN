@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from 'react';
-import type { KeyboardEvent } from 'react';
 import { useWorkspace } from '../../context/WorkspaceContext';
 import { 
   Circle, 
@@ -378,10 +377,8 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, defaultAssignee, onClose, o
 interface TaskGroupProps {
   status: TaskStatus;
   tasks: TaskItem[];
-  assignee: 'Miral' | 'Shalini';
   isCollapsed: boolean;
   onToggle: () => void;
-  onAddTaskInline: (title: string, status: TaskStatus, assignee: 'Miral' | 'Shalini') => void;
   onTaskClick: (task: TaskItem) => void;
   onDeleteTask: (id: string) => void;
   highlightedDate: string | null;
@@ -390,35 +387,18 @@ interface TaskGroupProps {
 const TaskGroup: React.FC<TaskGroupProps> = ({ 
   status, 
   tasks, 
-  assignee, 
   isCollapsed, 
   onToggle, 
-  onAddTaskInline, 
   onTaskClick,
   onDeleteTask,
   highlightedDate
 }) => {
   const { data: { categories }, updateTask } = useWorkspace();
-  const [isAdding, setIsAdding] = useState(false);
-  const [newTaskTitle, setNewTaskTitle] = useState('');
-
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      if (newTaskTitle.trim()) {
-        onAddTaskInline(newTaskTitle.trim(), status, assignee);
-        setNewTaskTitle('');
-        setIsAdding(false);
-      }
-    } else if (e.key === 'Escape') {
-      setIsAdding(false);
-      setNewTaskTitle('');
-    }
-  };
 
   if (tasks.length === 0 && status !== 'Todo' && status !== 'In Progress') return null;
 
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex flex-col w-full min-w-0">
       <div 
         className="flex items-center gap-2 py-2 px-1 cursor-pointer group hover:bg-white/[0.02] rounded-md transition-colors w-max pr-4"
         onClick={onToggle}
@@ -430,8 +410,8 @@ const TaskGroup: React.FC<TaskGroupProps> = ({
       </div>
 
       {!isCollapsed && (
-        <div className="mt-1 flex flex-col w-full border border-white/[0.04] rounded-xl overflow-hidden bg-white/[0.01]">
-          {tasks.length === 0 && !isAdding ? (
+        <div className="mt-1 flex flex-col w-full border border-white/[0.04] rounded-xl overflow-hidden bg-white/[0.01] min-w-0">
+          {tasks.length === 0 ? (
             <div className="py-6 flex justify-center text-[12.5px] text-apple-tertiary">
               No tasks
             </div>
@@ -443,15 +423,15 @@ const TaskGroup: React.FC<TaskGroupProps> = ({
                 <div 
                   id={`task-row-${task.id}`}
                   key={task.id} 
-                  className={`group flex flex-col gap-2 px-4 py-3 hover:bg-white/[0.03] transition-all cursor-pointer w-full ${
+                  className={`group flex flex-col gap-2 px-4 py-3 hover:bg-white/[0.03] transition-all cursor-pointer w-full min-w-0 ${
                     isHighlighted 
                       ? 'bg-emerald-500/10 border border-emerald-500/30 rounded-xl shadow-[0_0_12px_rgba(16,185,129,0.15)] my-1' 
-                      : index !== tasks.length - 1 || isAdding ? 'border-b border-white/[0.03]' : ''
+                      : index !== tasks.length - 1 ? 'border-b border-white/[0.03]' : ''
                   }`}
                   onClick={() => onTaskClick(task)}
                 >
                   {/* Top Line: ID, Status, Title, Delete Button */}
-                  <div className="flex items-start gap-3 w-full">
+                  <div className="flex items-start gap-3 w-full min-w-0">
                     <div className="flex-shrink-0 w-16 text-[11.5px] font-mono text-apple-tertiary group-hover:text-apple-secondary transition-colors pt-[2px]">
                       {task.identifier}
                     </div>
@@ -472,7 +452,10 @@ const TaskGroup: React.FC<TaskGroupProps> = ({
                     </div>
                     
                     <div className="flex-1 min-w-0">
-                      <span className={`text-[13px] font-medium leading-relaxed block whitespace-normal break-words ${task.status === 'Done' || task.status === 'Canceled' ? 'text-apple-tertiary line-through decoration-white/20' : 'text-white/90'}`}>
+                      <span 
+                        className={`text-[13px] font-medium leading-relaxed block ${task.status === 'Done' || task.status === 'Canceled' ? 'text-apple-tertiary line-through decoration-white/20' : 'text-white/90'}`}
+                        style={{ wordBreak: 'break-word', whiteSpace: 'normal' }}
+                      >
                         {task.title}
                       </span>
                     </div>
@@ -490,7 +473,7 @@ const TaskGroup: React.FC<TaskGroupProps> = ({
                   </div>
 
                   {/* Bottom Line: Metadata */}
-                  <div className="flex items-center gap-2.5 ml-[92px] flex-wrap text-apple-tertiary w-full pr-[92px]">
+                  <div className="flex items-center gap-2.5 ml-[92px] flex-wrap text-apple-tertiary w-full pr-[92px] min-w-0">
                     {task.priority && task.priority !== 'No priority' && (
                       <PriorityBadge priority={task.priority} />
                     )}
@@ -532,36 +515,6 @@ const TaskGroup: React.FC<TaskGroupProps> = ({
                 </div>
               );
             })
-          )}
-          
-          {isAdding ? (
-            <div className="flex items-center gap-3 px-4 py-2 bg-white/[0.02] w-full">
-              <div className="flex-shrink-0 w-16" />
-              <StatusIcon status={status} className="opacity-50" />
-              <input
-                autoFocus
-                type="text"
-                placeholder="Task title... (Press Enter to save, Esc to cancel)"
-                className="flex-1 bg-transparent border-none outline-none text-[13px] text-white placeholder:text-apple-tertiary"
-                value={newTaskTitle}
-                onChange={e => setNewTaskTitle(e.target.value)}
-                onKeyDown={handleKeyDown}
-                onBlur={() => {
-                  if (!newTaskTitle.trim()) {
-                    setIsAdding(false);
-                  }
-                }}
-              />
-            </div>
-          ) : (
-            <div 
-              className="flex items-center gap-3 px-4 py-2 border-t border-transparent hover:bg-white/[0.02] transition-colors cursor-pointer group w-full"
-              onClick={() => setIsAdding(true)}
-            >
-              <div className="flex-shrink-0 w-16" />
-              <Plus size={14} className="text-apple-tertiary group-hover:text-white/80 transition-colors" />
-              <span className="text-[12.5px] text-apple-tertiary group-hover:text-white/80 transition-colors">New task</span>
-            </div>
           )}
         </div>
       )}
@@ -610,16 +563,7 @@ export const Tasks: React.FC = () => {
     setModalOpen(false);
   };
 
-  const handleAddTaskInline = (title: string, status: TaskStatus, assignee: 'Miral' | 'Shalini') => {
-    addTask({
-      title,
-      status,
-      priority: 'No priority',
-      assignee,
-      date: new Date().toISOString().split('T')[0],
-      labels: []
-    });
-  };
+
 
   const handleDateClick = (dateStr: string) => {
     setHighlightedDate(dateStr);
@@ -691,10 +635,8 @@ export const Tasks: React.FC = () => {
               key={status}
               status={status}
               tasks={tasksByStatus[status]}
-              assignee={assignee}
               isCollapsed={!!collapsedGroups[groupKey]}
               onToggle={() => toggleGroup(groupKey)}
-              onAddTaskInline={handleAddTaskInline}
               onTaskClick={handleTaskClick}
               onDeleteTask={handleDeleteTask}
               highlightedDate={highlightedDate}
