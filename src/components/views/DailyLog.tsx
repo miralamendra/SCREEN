@@ -332,21 +332,17 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
                 </div>
               )}
               <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                <span className="text-[11px] font-mono text-apple-tertiary">
+                <span className="text-[10px] text-white/20 tabular-nums">
                   {log.date}
                 </span>
                 <span
-                  className="inline-flex items-center justify-center text-[10px] font-mono px-1.5 py-0 rounded border tracking-[0.02em] leading-relaxed"
-                  style={{ 
-                    color: categories.find(c => c.name === log.category)?.color || '#9ca3af',
-                    borderColor: categories.find(c => c.name === log.category)?.color || '#9ca3af',
-                    backgroundColor: (categories.find(c => c.name === log.category)?.color || '#9ca3af') + '10'
-                  }}
+                  className="text-[10px] font-medium tracking-wide"
+                  style={{ color: (categories.find(c => c.name === log.category)?.color || '#9ca3af') + 'aa' }}
                 >
                   {log.category}
                 </span>
                 {role === 'supervisor' && (
-                  <span className="inline-flex items-center justify-center text-[10px] font-mono px-1.5 py-0 rounded border border-apple-border bg-apple-surface text-apple-secondary leading-relaxed">
+                  <span className="text-[10px] text-white/20">
                     {log.person}
                   </span>
                 )}
