@@ -419,7 +419,7 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
                 value={editDescription}
                 onChange={e => setEditDescription(e.target.value)}
                 style={{ minHeight: '80px', height: 'auto' }}
-                className="w-full px-3.5 py-2.5 bg-apple-base border border-apple-border rounded-lg text-[14px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] transition-colors outline-none resize-none leading-relaxed"
+                className="w-full px-4 py-3 bg-apple-base border border-apple-border rounded-lg text-[14px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] transition-colors outline-none resize-none leading-relaxed"
               />
             </div>
 
@@ -514,7 +514,7 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
         <button
           ref={promptRef}
           onClick={() => setIsComposing(true)}
-          className="w-full flex items-center gap-2.5 px-4 py-3.5 rounded-lg border border-apple-border bg-apple-surface hover:bg-apple-elevated transition-colors text-[13.5px] text-apple-gray hover:text-white/85 group"
+          className="w-full flex items-center gap-2 px-4 py-3 rounded-lg border border-apple-border bg-apple-surface hover:bg-apple-elevated transition-colors text-[13.5px] text-apple-gray hover:text-white/85 group"
         >
           <span className="inline-flex items-center justify-center w-6 h-6 rounded-md bg-apple-elevated border border-apple-border transition-colors">
             <Plus size={13} className="group-hover:text-white transition-colors" />
@@ -527,7 +527,7 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
       ) : (
         <form
           onSubmit={handleSubmit}
-          className="rounded-lg border border-apple-border bg-apple-surface p-4 sm:p-5 space-y-3.5 fade-in"
+          className="rounded-lg border border-apple-border bg-apple-surface p-4 sm:p-5 space-y-4 fade-in"
         >
           <div className="flex items-center gap-2 pb-1">
             <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
@@ -590,7 +590,7 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
                 value={description}
                 onChange={e => setDescription(e.target.value)}
                 style={{ minHeight: '80px', height: 'auto' }}
-                className="w-full px-3.5 py-2.5 bg-apple-base border border-apple-border rounded-lg text-[14px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] transition-colors outline-none resize-none leading-relaxed"
+                className="w-full px-4 py-3 bg-apple-base border border-apple-border rounded-lg text-[14px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] transition-colors outline-none resize-none leading-relaxed"
               />
             </div>
 
