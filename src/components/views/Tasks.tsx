@@ -684,7 +684,7 @@ export const Tasks: React.FC = () => {
             </div>
             <button 
               onClick={handleOpenNewTask}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/[0.08] text-white/95 border border-white/[0.08] hover:bg-white/[0.12] hover:border-white/[0.14] rounded-lg text-[12px] font-medium shadow-[0_1px_2px_rgba(0,0,0,0.2)] transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/[0.08] text-white/95 border border-white/[0.08] hover:bg-white/[0.12] hover:border-white/[0.14] rounded-lg text-[12px] font-medium shadow-[0_1px_2px_rgba(0,0,0,0.2)] animate-pulse-emerald-btn transition-colors"
             >
               <Plus size={14} />
               <span>New Task</span>

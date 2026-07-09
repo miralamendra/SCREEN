@@ -152,7 +152,7 @@ export const Meetings: React.FC<MeetingsProps> = ({ newMeetingTrigger }) => {
           </button>
           <button
             onClick={() => setIsOpen(true)}
-            className="h-9 px-3.5 inline-flex items-center gap-2 rounded-lg bg-white text-apple-base text-[13px] font-semibold hover:bg-white/90 transition-colors"
+            className="h-9 px-3.5 inline-flex items-center gap-2 rounded-lg bg-white/[0.08] text-white/95 border border-white/[0.08] hover:bg-white/[0.12] hover:border-white/[0.14] text-[13px] font-semibold animate-pulse-emerald-btn transition-all shadow-[0_1px_2px_rgba(0,0,0,0.2)]"
           >
             <Plus size={14} />
             <span>Add Event</span>

@@ -440,12 +440,12 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
         <button
           ref={promptRef}
           onClick={() => setIsComposing(true)}
-          className="w-full flex items-center gap-2.5 px-4 py-3.5 rounded-xl border border-dashed border-white/[0.14] bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/[0.22] transition-colors text-[13.5px] text-apple-gray hover:text-white/85 group"
+          className="w-full flex items-center gap-2.5 px-4 py-3.5 rounded-xl border border-dashed border-white/[0.14] bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/[0.22] animate-pulse-emerald transition-all text-[13.5px] text-apple-gray hover:text-white/85 group"
         >
           <span className="inline-flex items-center justify-center w-6 h-6 rounded-md bg-white/[0.06] group-hover:bg-white/10 transition-colors">
             <Plus size={13} className="group-hover:text-white transition-colors" />
           </span>
-          <span>Add a log entry — what did you work on today?</span>
+          <span>Add a log entry - what did you work on today?</span>
           <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono bg-white/[0.04] border border-white/[0.06] ml-auto">
             C
           </kbd>
