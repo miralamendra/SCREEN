@@ -102,9 +102,6 @@ export const Calendar: React.FC = () => {
   const monthLogCount = visibleLogs.filter(l => l.date.startsWith(monthKey)).length;
   const monthMeetingCount = visibleMeetings.filter(m => m.date.startsWith(monthKey)).length;
   const monthTaskCount = visibleTasks.filter(t => t.date && t.date.startsWith(monthKey)).length;
-  const monthActiveDays = new Set(
-    visibleLogs.filter(l => l.date.startsWith(monthKey)).map(l => l.date)
-  ).size;
 
   const goPrev = () =>
     setCursor(new Date(cursor.getFullYear(), cursor.getMonth() - 1, 1));
@@ -162,16 +159,11 @@ export const Calendar: React.FC = () => {
       </div>
 
       {/* Month summary strip */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-3.5">
           <p className="text-[10.5px] font-medium tracking-[0.18em] uppercase text-apple-secondary">Logs</p>
           <p className="text-[22px] font-semibold text-white tabular-nums leading-none mt-2">{monthLogCount}</p>
           <p className="text-[11px] text-apple-tertiary mt-1.5">this month</p>
-        </div>
-        <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-3.5">
-          <p className="text-[10.5px] font-medium tracking-[0.18em] uppercase text-apple-secondary">Active days</p>
-          <p className="text-[22px] font-semibold text-white tabular-nums leading-none mt-2">{monthActiveDays}</p>
-          <p className="text-[11px] text-apple-tertiary mt-1.5">logged this month</p>
         </div>
         <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-3.5">
           <p className="text-[10.5px] font-medium tracking-[0.18em] uppercase text-apple-secondary">Meetings</p>
