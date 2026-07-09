@@ -451,11 +451,7 @@ export const Dashboard: React.FC = () => {
 
         {/* Content */}
         <main className="flex-1 overflow-y-auto">
-          <div className={`${
-            activeTab === 'tasks' || activeTab === 'calendar' 
-              ? 'max-w-[1280px]' 
-              : 'max-w-[860px]'
-          } mx-auto px-5 sm:px-8 py-6 sm:py-8 w-full`}>
+          <div className="max-w-[1280px] mx-auto px-5 sm:px-8 py-6 sm:py-8 w-full">
             {activeTab === 'overview' && role === 'supervisor' && <Overview />}
             {activeTab === 'tasks' && <Tasks />}
             {activeTab === 'log' && role !== 'supervisor' && <DailyLog newEntryTrigger={newLogTrigger} />}

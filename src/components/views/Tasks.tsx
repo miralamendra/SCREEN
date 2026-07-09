@@ -670,11 +670,17 @@ export const Tasks: React.FC = () => {
       <div className="flex flex-col lg:flex-row gap-8 items-start">
         {/* Main Columns Container */}
         <div className="flex-1 w-full min-w-0">
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-end justify-between gap-4 flex-wrap mb-8">
             <div>
-              <h1 className="text-[20px] font-semibold tracking-tight text-white flex items-center gap-2">
+              <p className="text-[10.5px] font-medium tracking-[0.18em] uppercase text-apple-secondary mb-2">
+                Workspace
+              </p>
+              <h1 className="text-[30px] sm:text-[34px] font-semibold tracking-[-0.025em] text-white leading-none">
                 Tasks
               </h1>
+              <p className="text-[13px] text-apple-gray mt-2.5">
+                Manage and track your research todo items, priority tasks, and progress.
+              </p>
             </div>
             <button 
               onClick={handleOpenNewTask}
