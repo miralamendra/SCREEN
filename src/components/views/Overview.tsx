@@ -264,7 +264,7 @@ export const Overview: React.FC = () => {
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())[0] ?? null;
   }, [meetings]);
 
-  const totalWeekLogs = shalini.weekLogDays + miral.weekLogDays;
+
 
   return (
     <div className="fade-in space-y-10 pb-10">
@@ -282,16 +282,9 @@ export const Overview: React.FC = () => {
         </p>
       </div>
 
-      {/* ── Command strip — 4 key metrics ── */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+      {/* ── Command strip — 3 key metrics ── */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
         {[
-          {
-            icon: Activity,
-            label: 'Logged this week',
-            value: `${totalWeekLogs} day${totalWeekLogs !== 1 ? 's' : ''}`,
-            sub: 'across both studies',
-            tone: 'default' as const
-          },
           {
             icon: Milestone,
             label: 'Overall progress',
