@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useWorkspace } from '../../context/WorkspaceContext';
-import { CheckCircle2, ListTodo } from 'lucide-react';
+import { CheckCircle2, ListTodo, ChevronRight } from 'lucide-react';
 import { Avatar } from '../ui/Avatar';
 import { SegmentedControl } from '../ui/SegmentedControl';
 
@@ -79,6 +79,12 @@ const renderFormattedDescription = (text: string) => {
 export const SupervisorHistory: React.FC = () => {
   const { data: { dailyLogs, deliverables, categories } } = useWorkspace();
   const [tab, setTab] = useState<'Daily' | 'Weekly' | 'Monthly'>('Daily');
+  const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set());
+  const toggleSection = (key: string) => setCollapsedSections(prev => {
+    const next = new Set(prev);
+    if (next.has(key)) next.delete(key); else next.add(key);
+    return next;
+  });
 
   const groupedData = useMemo(() => {
     const acc: Record<string, {
@@ -211,8 +217,16 @@ export const SupervisorHistory: React.FC = () => {
 
             return (
               <div key={key}>
-                {/* Period header — same minimal style as DailyLog */}
-                <div className="flex items-center gap-3 pt-6 pb-1.5 mb-1">
+                {/* Period header — collapsible, same minimal style as DailyLog */}
+                <button
+                  onClick={() => toggleSection(key)}
+                  className="w-full flex items-center gap-3 pt-6 pb-1.5 mb-1 cursor-pointer"
+                >
+                  <ChevronRight
+                    size={10}
+                    className="text-apple-tertiary/50 shrink-0 transition-transform duration-200"
+                    style={{ transform: collapsedSections.has(key) ? 'rotate(0deg)' : 'rotate(90deg)' }}
+                  />
                   <span className="text-[11px] font-semibold tracking-[0.08em] uppercase text-white/40 shrink-0">
                     {group.label}
                   </span>
@@ -220,31 +234,33 @@ export const SupervisorHistory: React.FC = () => {
                   <span className="text-[10px] font-mono text-white/20 tabular-nums shrink-0">
                     {mCount + sCount}
                   </span>
-                </div>
+                </button>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  {/* Shalini */}
-                  {sCount > 0 && (
-                    <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <Avatar name="Shalini" size="xs" />
-                        <span className="text-[11px] font-semibold text-white/50 uppercase tracking-wider">Shalini</span>
+                {!collapsedSections.has(key) && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-2">
+                    {/* Shalini */}
+                    {sCount > 0 && (
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <Avatar name="Shalini" size="xs" />
+                          <span className="text-[11px] font-semibold text-white/50 uppercase tracking-wider">Shalini</span>
+                        </div>
+                        {renderPersonLogs(group.shalini.logs, group.shalini.deliverables)}
                       </div>
-                      {renderPersonLogs(group.shalini.logs, group.shalini.deliverables)}
-                    </div>
-                  )}
+                    )}
 
-                  {/* Miral */}
-                  {mCount > 0 && (
-                    <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <Avatar name="Miral" size="xs" />
-                        <span className="text-[11px] font-semibold text-white/50 uppercase tracking-wider">Miral</span>
+                    {/* Miral */}
+                    {mCount > 0 && (
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <Avatar name="Miral" size="xs" />
+                          <span className="text-[11px] font-semibold text-white/50 uppercase tracking-wider">Miral</span>
+                        </div>
+                        {renderPersonLogs(group.miral.logs, group.miral.deliverables)}
                       </div>
-                      {renderPersonLogs(group.miral.logs, group.miral.deliverables)}
-                    </div>
-                  )}
-                </div>
+                    )}
+                  </div>
+                )}
               </div>
             );
           })
