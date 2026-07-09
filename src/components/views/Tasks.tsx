@@ -215,7 +215,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, defaultAssignee, onClose, o
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <form 
         onSubmit={handleSubmit}
-        className="bg-[#1c1c1e] border border-white/10 rounded-2xl w-full max-w-lg shadow-2xl flex flex-col max-h-[90vh] overflow-hidden fade-in"
+        className="bg-apple-elevated border border-apple-border rounded-2xl w-full max-w-lg shadow-2xl flex flex-col max-h-[90vh] overflow-hidden fade-in"
       >
         <div className="flex items-center justify-between p-4 border-b border-white/10">
           <h2 className="text-[15px] font-semibold text-white">

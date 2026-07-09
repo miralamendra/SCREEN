@@ -1,18 +1,18 @@
 @import "tailwindcss";
 
 @theme {
-  /* Surface scale — used everywhere */
-  --color-apple-base: #0a0a0a;
-  --color-apple-surface: #141414;
-  --color-apple-elevated: #1c1c1e;
-  --color-apple-border: rgba(255, 255, 255, 0.06);
-  --color-apple-gray: #8e8e93;
-  --color-apple-secondary: #636366;
-  --color-apple-tertiary: #48484a;
+  /* Surface scale — premium desaturated charcoal dark theme (GitHub quality, no blue) */
+  --color-apple-base: #0c0d0e;
+  --color-apple-surface: #141618;
+  --color-apple-elevated: #1b1e21;
+  --color-apple-border: #23272b; /* Subtle but defined borders like github's #30363d */
+  --color-apple-gray: #8c929a;
+  --color-apple-secondary: #656c76;
+  --color-apple-tertiary: #484f58;
 
-  /* Brand — HEC research workspace, deep forest green */
-  --color-accent: #004d33;
-  --color-accent-soft: rgba(0, 77, 51, 0.12);
+  /* Brand — HEC research workspace, desaturated premium emerald green */
+  --color-accent: #059669;
+  --color-accent-soft: rgba(5, 150, 105, 0.12);
   --color-accent-fg: #ffffff;
 }
 
