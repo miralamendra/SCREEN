@@ -318,35 +318,50 @@ const TaskGroup: React.FC<TaskGroupProps> = ({
               return (
                 <div 
                   key={task.id} 
-                  className={`group flex items-start gap-3 px-4 py-3 hover:bg-white/[0.03] transition-colors cursor-pointer ${index !== tasks.length - 1 || isAdding ? 'border-b border-white/[0.03]' : ''}`}
+                  className={`group flex flex-col gap-2 px-4 py-3 hover:bg-white/[0.03] transition-colors cursor-pointer ${index !== tasks.length - 1 || isAdding ? 'border-b border-white/[0.03]' : ''}`}
                   onClick={() => onTaskClick(task)}
                 >
-                  <div className="flex-shrink-0 w-16 text-[11.5px] font-mono text-apple-tertiary group-hover:text-apple-secondary transition-colors pt-[2px]">
-                    {task.identifier}
-                  </div>
-                  
-                  <div 
-                    className="relative group/status flex-shrink-0 cursor-pointer pt-[2px]"
-                    onClick={e => e.stopPropagation()}
-                  >
-                    <StatusIcon status={task.status} />
-                    <select
-                      value={task.status}
-                      onChange={(e) => updateTask(task.id, { status: e.target.value as TaskStatus })}
-                      className="absolute inset-0 opacity-0 cursor-pointer text-[12px]"
-                      title="Change status"
+                  {/* Top Line: ID, Status, Title, Delete Button */}
+                  <div className="flex items-start gap-3 w-full">
+                    <div className="flex-shrink-0 w-16 text-[11.5px] font-mono text-apple-tertiary group-hover:text-apple-secondary transition-colors pt-[2px]">
+                      {task.identifier}
+                    </div>
+                    
+                    <div 
+                      className="relative group/status flex-shrink-0 cursor-pointer pt-[2px]"
+                      onClick={e => e.stopPropagation()}
                     >
-                      {STATUS_GROUPS.map(s => <option key={s} value={s}>{s}</option>)}
-                    </select>
+                      <StatusIcon status={task.status} />
+                      <select
+                        value={task.status}
+                        onChange={(e) => updateTask(task.id, { status: e.target.value as TaskStatus })}
+                        className="absolute inset-0 opacity-0 cursor-pointer text-[12px]"
+                        title="Change status"
+                      >
+                        {STATUS_GROUPS.map(s => <option key={s} value={s}>{s}</option>)}
+                      </select>
+                    </div>
+                    
+                    <div className="flex-1 min-w-0">
+                      <span className={`text-[13px] font-medium leading-relaxed block whitespace-normal break-words ${task.status === 'Done' || task.status === 'Canceled' ? 'text-apple-tertiary line-through decoration-white/20' : 'text-white/90'}`}>
+                        {task.title}
+                      </span>
+                    </div>
+
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDeleteTask(task.id);
+                      }}
+                      className="opacity-0 group-hover:opacity-100 p-1 text-apple-secondary hover:text-red-400 hover:bg-red-400/10 rounded transition-all shrink-0 mt-[2px]"
+                      title="Delete task"
+                    >
+                      <Trash2 size={13} />
+                    </button>
                   </div>
-                  
-                  <div className="flex-1 min-w-0">
-                    <span className={`text-[13px] font-medium leading-relaxed block whitespace-normal break-words ${task.status === 'Done' || task.status === 'Canceled' ? 'text-apple-tertiary line-through decoration-white/20' : 'text-white/90'}`}>
-                      {task.title}
-                    </span>
-                  </div>
-                  
-                   <div className="flex-shrink-0 flex items-center gap-2 pt-[2px]">
+
+                  {/* Bottom Line: Metadata (indented to align with title) */}
+                  <div className="flex items-center gap-2.5 ml-[92px] flex-wrap text-apple-tertiary">
                     {task.priority && task.priority !== 'No priority' && (
                       <PriorityBadge priority={task.priority} />
                     )}
@@ -372,28 +387,19 @@ const TaskGroup: React.FC<TaskGroupProps> = ({
                         {label}
                       </span>
                     ))}
-                  </div>
-                  
-                  {task.date && (
-                    <div className="flex-shrink-0 w-16 text-right text-[11px] text-apple-tertiary whitespace-nowrap pt-[2px]">
-                      {new Date(task.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-                    </div>
-                  )}
-                  
-                  <div className="flex-shrink-0 ml-2 pt-[2px]" title={task.assignee}>
-                    <Avatar name={task.assignee} size="xs" />
-                  </div>
+                    
+                    {task.date && (
+                      <span className="text-[11px] text-apple-tertiary whitespace-nowrap pl-1">
+                        {new Date(task.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                      </span>
+                    )}
 
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDeleteTask(task.id);
-                    }}
-                    className="opacity-0 group-hover:opacity-100 p-1 text-apple-secondary hover:text-red-400 hover:bg-red-400/10 rounded transition-all ml-1 shrink-0 mt-[2px]"
-                    title="Delete task"
-                  >
-                    <Trash2 size={13} />
-                  </button>
+                    <div className="flex-1" />
+                    
+                    <div className="flex-shrink-0 mr-1" title={task.assignee}>
+                      <Avatar name={task.assignee} size="xs" />
+                    </div>
+                  </div>
                 </div>
               );
             })
