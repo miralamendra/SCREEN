@@ -418,7 +418,7 @@ const TaskGroup: React.FC<TaskGroupProps> = ({
   if (tasks.length === 0 && status !== 'Todo' && status !== 'In Progress') return null;
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-full">
       <div 
         className="flex items-center gap-2 py-2 px-1 cursor-pointer group hover:bg-white/[0.02] rounded-md transition-colors w-max pr-4"
         onClick={onToggle}
@@ -430,7 +430,7 @@ const TaskGroup: React.FC<TaskGroupProps> = ({
       </div>
 
       {!isCollapsed && (
-        <div className="mt-1 flex flex-col border border-white/[0.04] rounded-xl overflow-hidden bg-white/[0.01]">
+        <div className="mt-1 flex flex-col w-full border border-white/[0.04] rounded-xl overflow-hidden bg-white/[0.01]">
           {tasks.length === 0 && !isAdding ? (
             <div className="py-6 flex justify-center text-[12.5px] text-apple-tertiary">
               No tasks
@@ -443,7 +443,7 @@ const TaskGroup: React.FC<TaskGroupProps> = ({
                 <div 
                   id={`task-row-${task.id}`}
                   key={task.id} 
-                  className={`group flex flex-col gap-2 px-4 py-3 hover:bg-white/[0.03] transition-all cursor-pointer ${
+                  className={`group flex flex-col gap-2 px-4 py-3 hover:bg-white/[0.03] transition-all cursor-pointer w-full ${
                     isHighlighted 
                       ? 'bg-emerald-500/10 border border-emerald-500/30 rounded-xl shadow-[0_0_12px_rgba(16,185,129,0.15)] my-1' 
                       : index !== tasks.length - 1 || isAdding ? 'border-b border-white/[0.03]' : ''
@@ -490,7 +490,7 @@ const TaskGroup: React.FC<TaskGroupProps> = ({
                   </div>
 
                   {/* Bottom Line: Metadata */}
-                  <div className="flex items-center gap-2.5 ml-[92px] flex-wrap text-apple-tertiary">
+                  <div className="flex items-center gap-2.5 ml-[92px] flex-wrap text-apple-tertiary w-full pr-[92px]">
                     {task.priority && task.priority !== 'No priority' && (
                       <PriorityBadge priority={task.priority} />
                     )}
@@ -535,7 +535,7 @@ const TaskGroup: React.FC<TaskGroupProps> = ({
           )}
           
           {isAdding ? (
-            <div className="flex items-center gap-3 px-4 py-2 bg-white/[0.02]">
+            <div className="flex items-center gap-3 px-4 py-2 bg-white/[0.02] w-full">
               <div className="flex-shrink-0 w-16" />
               <StatusIcon status={status} className="opacity-50" />
               <input
@@ -555,7 +555,7 @@ const TaskGroup: React.FC<TaskGroupProps> = ({
             </div>
           ) : (
             <div 
-              className="flex items-center gap-3 px-4 py-2 border-t border-transparent hover:bg-white/[0.02] transition-colors cursor-pointer group"
+              className="flex items-center gap-3 px-4 py-2 border-t border-transparent hover:bg-white/[0.02] transition-colors cursor-pointer group w-full"
               onClick={() => setIsAdding(true)}
             >
               <div className="flex-shrink-0 w-16" />
@@ -677,7 +677,7 @@ export const Tasks: React.FC = () => {
     });
 
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 w-full">
         {isSupervisor && (
           <div className="flex items-center gap-3 pb-2 border-b border-white/[0.06] mb-4">
             <Avatar name={assignee} size="sm" />
@@ -726,12 +726,12 @@ export const Tasks: React.FC = () => {
           </div>
 
           {isSupervisor ? (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-              <div>{renderColumn('Shalini', shaliniTasks)}</div>
-              <div>{renderColumn('Miral', miralTasks)}</div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 w-full">
+              <div className="w-full">{renderColumn('Shalini', shaliniTasks)}</div>
+              <div className="w-full">{renderColumn('Miral', miralTasks)}</div>
             </div>
           ) : (
-            <div className="max-w-4xl">
+            <div className="max-w-4xl w-full">
               {renderColumn(activePerson, role === 'shalini' ? shaliniTasks : miralTasks)}
             </div>
           )}
