@@ -299,7 +299,7 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
       <div
         key={log.id}
         id={`log-row-${log.id}`}
-        className="group relative rounded-lg border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/[0.1] p-4 transition-colors"
+        className="group relative py-4 border-b border-apple-border/50 last:border-0 transition-colors"
       >
         {!isEditing ? (
           <div className="flex items-start gap-3">
@@ -419,7 +419,7 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
                 value={editDescription}
                 onChange={e => setEditDescription(e.target.value)}
                 style={{ minHeight: '80px', height: 'auto' }}
-                className="w-full px-3.5 py-2.5 bg-white/[0.04] border border-white/[0.08] rounded-lg text-[14px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] focus:bg-white/[0.06] transition-colors outline-none resize-none leading-relaxed"
+                className="w-full px-3.5 py-2.5 bg-apple-base border border-apple-border rounded-lg text-[14px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] transition-colors outline-none resize-none leading-relaxed"
               />
             </div>
 
@@ -514,9 +514,9 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
         <button
           ref={promptRef}
           onClick={() => setIsComposing(true)}
-          className="w-full flex items-center gap-2.5 px-4 py-3.5 rounded-xl border border-dashed border-white/[0.14] bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/[0.22] animate-pulse-emerald transition-all text-[13.5px] text-apple-gray hover:text-white/85 group"
+          className="w-full flex items-center gap-2.5 px-4 py-3.5 rounded-lg border border-apple-border bg-apple-surface hover:bg-apple-elevated transition-colors text-[13.5px] text-apple-gray hover:text-white/85 group"
         >
-          <span className="inline-flex items-center justify-center w-6 h-6 rounded-md bg-white/[0.06] group-hover:bg-white/10 transition-colors">
+          <span className="inline-flex items-center justify-center w-6 h-6 rounded-md bg-apple-elevated border border-apple-border transition-colors">
             <Plus size={13} className="group-hover:text-white transition-colors" />
           </span>
           <span>Add a log entry - what did you work on today?</span>
@@ -527,7 +527,7 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
       ) : (
         <form
           onSubmit={handleSubmit}
-          className="rounded-xl border border-white/[0.1] bg-apple-surface/60 p-4 sm:p-5 space-y-3.5 fade-in shadow-[0_4px_24px_rgba(0,0,0,0.3)]"
+          className="rounded-lg border border-apple-border bg-apple-surface p-4 sm:p-5 space-y-3.5 fade-in"
         >
           <div className="flex items-center gap-2 pb-1">
             <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
@@ -590,7 +590,7 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
                 value={description}
                 onChange={e => setDescription(e.target.value)}
                 style={{ minHeight: '80px', height: 'auto' }}
-                className="w-full px-3.5 py-2.5 bg-white/[0.04] border border-white/[0.08] rounded-lg text-[14px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] focus:bg-white/[0.06] transition-colors outline-none resize-none leading-relaxed"
+                className="w-full px-3.5 py-2.5 bg-apple-base border border-apple-border rounded-lg text-[14px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] transition-colors outline-none resize-none leading-relaxed"
               />
             </div>
 

@@ -19,7 +19,7 @@
 @layer base {
   body {
     @apply bg-apple-base text-white antialiased;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", system-ui, sans-serif;
+    font-family: "Geist", "Geist Sans", "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     letter-spacing: -0.011em;
@@ -113,48 +113,4 @@ select {
   line-height: 1.5;
 }
 
-@keyframes pulse-emerald {
-  0%, 100% {
-    border-color: rgba(16, 185, 129, 0.16);
-    box-shadow: 0 0 0 rgba(16, 185, 129, 0);
-  }
-  50% {
-    border-color: rgba(16, 185, 129, 0.45);
-    box-shadow: 0 0 8px rgba(16, 185, 129, 0.12);
-  }
-}
-.animate-pulse-emerald {
-  animation: pulse-emerald 2s infinite ease-in-out;
-}
 
-@keyframes pulse-emerald-btn {
-  0%, 100% {
-    border-color: rgba(16, 185, 129, 0.16);
-    background-color: rgba(16, 185, 129, 0.05);
-    box-shadow: 0 0 0 rgba(16, 185, 129, 0);
-  }
-  50% {
-    border-color: rgba(16, 185, 129, 0.45);
-    background-color: rgba(16, 185, 129, 0.12);
-    box-shadow: 0 0 8px rgba(16, 185, 129, 0.15);
-  }
-}
-.animate-pulse-emerald-btn {
-  animation: pulse-emerald-btn 2.5s infinite ease-in-out;
-}
-
-@keyframes pulse-dark-green {
-  0%, 100% {
-    border-color: rgba(16, 185, 129, 0.25);
-    background-color: rgba(6, 78, 59, 0.45);
-    box-shadow: 0 0 0 rgba(16, 185, 129, 0);
-  }
-  50% {
-    border-color: rgba(16, 185, 129, 0.6);
-    background-color: rgba(6, 78, 59, 0.75);
-    box-shadow: 0 0 8px rgba(16, 185, 129, 0.2);
-  }
-}
-.animate-pulse-dark-green {
-  animation: pulse-dark-green 2.5s infinite ease-in-out;
-}

@@ -169,12 +169,7 @@ export const Dashboard: React.FC = () => {
   };
 
   return (
-    <div
-      className="flex h-screen overflow-hidden relative"
-      style={{
-        background: 'radial-gradient(circle at 50% -20%, #010402 0%, #000100 100%)'
-      }}
-    >
+    <div className="flex h-screen overflow-hidden relative bg-apple-base">
       {/* Desktop sidebar */}
       <aside className="hidden md:flex flex-col w-[244px] bg-apple-base/85 border-r border-white/[0.06] shrink-0 relative z-10 backdrop-blur-md overflow-hidden">
         {/* Sidebar Header */}
@@ -416,7 +411,7 @@ export const Dashboard: React.FC = () => {
                     setTimeout(() => setNewLogTrigger(t => t + 1), 50);
                   }
                 }}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 border rounded-lg text-[12px] font-medium text-white/95 animate-pulse-dark-green hover:text-white transition-colors ml-1"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-apple-border bg-apple-surface rounded-lg text-[12px] font-medium text-white/95 hover:bg-apple-elevated hover:text-white transition-colors ml-1"
               >
                 <Plus size={12} strokeWidth={2.5} />
                 <span>New entry</span>
@@ -442,7 +437,7 @@ export const Dashboard: React.FC = () => {
               if (activeTab === 'log') setNewLogTrigger(t => t + 1);
               else { setActiveTab('log'); setTimeout(() => setNewLogTrigger(t => t + 1), 50); }
             }}
-            className="inline-flex items-center gap-1 px-2.5 py-1 border rounded-lg text-[12px] font-medium text-white/95 animate-pulse-dark-green hover:text-white transition-colors"
+            className="inline-flex items-center gap-1 px-2.5 py-1 border border-apple-border bg-apple-surface rounded-lg text-[12px] font-medium text-white/95 hover:bg-apple-elevated hover:text-white transition-colors"
           >
             <Plus size={12} strokeWidth={2.5} />
             <span>New</span>

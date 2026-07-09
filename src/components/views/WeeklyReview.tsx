@@ -551,7 +551,7 @@ export const WeeklyReview: React.FC = () => {
                   onChange={e => setSupervisorCommentShalini(e.target.value)}
                   style={{ minHeight: '60px', height: 'auto' }}
                   placeholder="Add comments for Shalini…"
-                  className="w-full px-3.5 py-2.5 bg-white/[0.03] border border-white/[0.08] rounded-lg text-[14px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] focus:bg-white/[0.05] transition-colors outline-none resize-none leading-relaxed"
+                  className="w-full px-3.5 py-2.5 bg-apple-base border border-apple-border rounded-lg text-[14px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] transition-colors outline-none resize-none leading-relaxed"
                 />
                 <div className="flex justify-end gap-2 mt-2">
                   {myReflection.supervisorCommentShalini && (
@@ -597,7 +597,7 @@ export const WeeklyReview: React.FC = () => {
                   onChange={e => setSupervisorCommentMiral(e.target.value)}
                   style={{ minHeight: '60px', height: 'auto' }}
                   placeholder="Add comments for Miral…"
-                  className="w-full px-3.5 py-2.5 bg-white/[0.03] border border-white/[0.08] rounded-lg text-[14px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] focus:bg-white/[0.05] transition-colors outline-none resize-none leading-relaxed"
+                  className="w-full px-3.5 py-2.5 bg-apple-base border border-apple-border rounded-lg text-[14px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] transition-colors outline-none resize-none leading-relaxed"
                 />
                 <div className="flex justify-end gap-2 mt-2">
                   {myReflection.supervisorCommentMiral && (
