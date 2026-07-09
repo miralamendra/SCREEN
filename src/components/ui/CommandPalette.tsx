@@ -106,11 +106,11 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
         icon: Plus, run: () => { onClose(); onOpenNewMeeting(); }
       },
       {
-        id: 'a-shalini', group: 'Actions', label: 'Switch to Study 1 — GenAI',
+        id: 'a-shalini', group: 'Actions', label: 'Switch to Study 1 - GenAI',
         icon: User, run: () => { setRole('shalini'); onClose(); navigate('/workspace/log'); }
       },
       {
-        id: 'a-miral', group: 'Actions', label: 'Switch to Study 2 — Gamification',
+        id: 'a-miral', group: 'Actions', label: 'Switch to Study 2 - Gamification',
         icon: User, run: () => { setRole('miral'); onClose(); navigate('/workspace/log'); }
       },
       {

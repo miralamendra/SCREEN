@@ -20,14 +20,14 @@ const PORTALS: Portal[] = [
   {
     role: 'shalini',
     number: '01',
-    title: 'Study 1 — GenAI Application',
+    title: 'Study 1 - GenAI Application',
     description: 'Generative AI for translating local coexistence wisdom into actionable guidance.',
     destination: '/workspace/log'
   },
   {
     role: 'miral',
     number: '02',
-    title: 'Study 2 — Gamification',
+    title: 'Study 2 - Gamification',
     description: 'A serious game for integrating elephant behavioral intelligence with children and young professionals.',
     destination: '/workspace/log'
   },

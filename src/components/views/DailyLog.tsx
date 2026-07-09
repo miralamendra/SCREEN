@@ -34,7 +34,7 @@ const getWeekRangeLabel = (dateStr: string) => {
 
   return {
     id: `${d.getUTCFullYear()}-W${String(weekNum).padStart(2, '0')}`,
-    label: `Week ${weekNum} (${startLabel} – ${endLabel})`
+    label: `Week ${weekNum} (${startLabel} - ${endLabel})`
   };
 };
 

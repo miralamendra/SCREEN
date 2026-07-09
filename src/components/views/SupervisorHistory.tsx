@@ -55,7 +55,7 @@ export const SupervisorHistory: React.FC = () => {
         end.setDate(start.getDate() + 6);
         const startLabel = start.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
         const endLabel = end.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
-        return `Week ${weekNum} (${startLabel} – ${endLabel})`;
+        return `Week ${weekNum} (${startLabel} - ${endLabel})`;
       }
       return d.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
     };

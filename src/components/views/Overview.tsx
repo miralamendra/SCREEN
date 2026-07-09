@@ -304,7 +304,7 @@ export const Overview: React.FC = () => {
             label: 'Next meeting',
             value: nextMeeting
               ? new Date(nextMeeting.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
-              : '—',
+              : '-',
             sub: nextMeeting?.title?.slice(0, 32) ?? 'Nothing scheduled',
             tone: 'default' as const
           }
