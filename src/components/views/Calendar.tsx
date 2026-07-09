@@ -4,6 +4,71 @@ import { ChevronLeft, ChevronRight, CalendarDays, MapPin, ExternalLink } from 'l
 import type { DailyLogEntry, MeetingEvent, TaskItem } from '../../data/initialState';
 import { useNavigate } from 'react-router-dom';
 
+const renderFormattedDescription = (text: string) => {
+  const lines = text.split('\n');
+  const elements: React.ReactNode[] = [];
+  
+  let currentListType: 'ul' | 'ol' | null = null;
+  let currentListItems: string[] = [];
+
+  const flushList = (key: string | number) => {
+    if (currentListItems.length === 0) return;
+    if (currentListType === 'ul') {
+      elements.push(
+        <ul key={`ul-${key}`} className="list-disc pl-5 my-1.5 space-y-1 text-[13px] text-white/90 leading-snug">
+          {currentListItems.map((item, idx) => (
+            <li key={idx}>{item}</li>
+          ))}
+        </ul>
+      );
+    } else if (currentListType === 'ol') {
+      elements.push(
+        <ol key={`ol-${key}`} className="list-decimal pl-5 my-1.5 space-y-1 text-[13px] text-white/90 leading-snug">
+          {currentListItems.map((item, idx) => (
+            <li key={idx}>{item}</li>
+          ))}
+        </ol>
+      );
+    }
+    currentListItems = [];
+    currentListType = null;
+  };
+
+  lines.forEach((line, idx) => {
+    const trimmed = line.trim();
+    const isBullet = /^[*-]\s+(.*)/.exec(trimmed);
+    const isNumbered = /^\d+[\.)]\s+(.*)/.exec(trimmed);
+
+    if (isBullet) {
+      if (currentListType !== 'ul') {
+        flushList(idx);
+        currentListType = 'ul';
+      }
+      currentListItems.push(isBullet[1]);
+    } else if (isNumbered) {
+      if (currentListType !== 'ol') {
+        flushList(idx);
+        currentListType = 'ol';
+      }
+      currentListItems.push(isNumbered[1]);
+    } else {
+      flushList(idx);
+      if (trimmed.length > 0) {
+        elements.push(
+          <p key={`p-${idx}`} className="text-[13px] text-white/90 leading-snug my-1 break-words whitespace-pre-wrap">
+            {line}
+          </p>
+        );
+      } else {
+        elements.push(<div key={`br-${idx}`} className="h-1" />);
+      }
+    }
+  });
+
+  flushList(lines.length);
+  return elements;
+};
+
 const WEEKDAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 const MONTH_NAMES = [
@@ -446,9 +511,9 @@ export const Calendar: React.FC = () => {
                           style={{ backgroundColor: categories.find(c => c.name === log.category)?.color || '#9ca3af' }}
                         />
                         <div className="flex-1 min-w-0">
-                          <p className="text-[13px] text-white/90 leading-snug">
-                            {log.description}
-                          </p>
+                          <div className="space-y-1">
+                            {renderFormattedDescription(log.description)}
+                          </div>
                           <p className="text-[10.5px] font-medium text-apple-secondary uppercase tracking-wider mt-1.5">
                             {log.person} · {log.category}
                           </p>

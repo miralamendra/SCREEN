@@ -38,6 +38,71 @@ const getWeekRangeLabel = (dateStr: string) => {
   };
 };
 
+const renderFormattedDescription = (text: string) => {
+  const lines = text.split('\n');
+  const elements: React.ReactNode[] = [];
+  
+  let currentListType: 'ul' | 'ol' | null = null;
+  let currentListItems: string[] = [];
+
+  const flushList = (key: string | number) => {
+    if (currentListItems.length === 0) return;
+    if (currentListType === 'ul') {
+      elements.push(
+        <ul key={`ul-${key}`} className="list-disc pl-5 my-2 space-y-1 text-[14.5px] text-white font-medium leading-relaxed">
+          {currentListItems.map((item, idx) => (
+            <li key={idx}>{item}</li>
+          ))}
+        </ul>
+      );
+    } else if (currentListType === 'ol') {
+      elements.push(
+        <ol key={`ol-${key}`} className="list-decimal pl-5 my-2 space-y-1 text-[14.5px] text-white font-medium leading-relaxed">
+          {currentListItems.map((item, idx) => (
+            <li key={idx}>{item}</li>
+          ))}
+        </ol>
+      );
+    }
+    currentListItems = [];
+    currentListType = null;
+  };
+
+  lines.forEach((line, idx) => {
+    const trimmed = line.trim();
+    const isBullet = /^[*-]\s+(.*)/.exec(trimmed);
+    const isNumbered = /^\d+[\.)]\s+(.*)/.exec(trimmed);
+
+    if (isBullet) {
+      if (currentListType !== 'ul') {
+        flushList(idx);
+        currentListType = 'ul';
+      }
+      currentListItems.push(isBullet[1]);
+    } else if (isNumbered) {
+      if (currentListType !== 'ol') {
+        flushList(idx);
+        currentListType = 'ol';
+      }
+      currentListItems.push(isNumbered[1]);
+    } else {
+      flushList(idx);
+      if (trimmed.length > 0) {
+        elements.push(
+          <p key={`p-${idx}`} className="text-[14.5px] text-white font-medium leading-relaxed my-1.5 break-words whitespace-pre-wrap">
+            {line}
+          </p>
+        );
+      } else {
+        elements.push(<div key={`br-${idx}`} className="h-2" />);
+      }
+    }
+  });
+
+  flushList(lines.length);
+  return elements;
+};
+
 interface DailyLogProps {
   newEntryTrigger?: number;
 }
@@ -64,8 +129,6 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
     }
   }, [location.state]);
 
-
-
   const [isComposing, setIsComposing] = useState(false);
   const [activeTab, setActiveTab] = useState<'Daily' | 'Weekly' | 'Monthly' | 'All Time'>('Daily');
   const [isManageCategoriesOpen, setIsManageCategoriesOpen] = useState(false);
@@ -81,6 +144,23 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
   const [editTakeaway, setEditTakeaway] = useState('');
   const [editDate, setEditDate] = useState('');
   const promptRef = useRef<HTMLButtonElement>(null);
+
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const editTextareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [description]);
+
+  useEffect(() => {
+    if (editTextareaRef.current) {
+      editTextareaRef.current.style.height = 'auto';
+      editTextareaRef.current.style.height = `${editTextareaRef.current.scrollHeight}px`;
+    }
+  }, [editDescription]);
 
   const activePerson = role === 'shalini' ? 'Shalini' : 'Miral';
   const myLogs = useMemo(
@@ -228,9 +308,9 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
               style={{ backgroundColor: categories.find(c => c.name === log.category)?.color || '#9ca3af' }} 
             />
             <div className="flex-1 min-w-0">
-              <p className="text-[14.5px] text-white font-medium leading-relaxed">
-                {log.description}
-              </p>
+              <div className="space-y-1">
+                {renderFormattedDescription(log.description)}
+              </div>
 
               <div className="flex items-center gap-2 mt-2.5 flex-wrap">
                 {role === 'supervisor' && (
@@ -334,10 +414,11 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
                 Description
               </label>
               <textarea
-                rows={3}
+                ref={editTextareaRef}
                 required
                 value={editDescription}
                 onChange={e => setEditDescription(e.target.value)}
+                style={{ minHeight: '80px', height: 'auto' }}
                 className="w-full px-3.5 py-2.5 bg-white/[0.04] border border-white/[0.08] rounded-lg text-[14px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] focus:bg-white/[0.06] transition-colors outline-none resize-none leading-relaxed"
               />
             </div>
@@ -407,32 +488,25 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0 flex-wrap">
+          {/* Today stats badge */}
+          <div className="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-white/[0.04] border border-white/[0.06] text-[11.5px] text-apple-secondary font-medium">
+            <span>Today</span>
+            <span className="text-white font-mono font-semibold tabular-nums bg-white/[0.06] px-1.5 py-0.2 rounded border border-white/5">{todayCount}</span>
+          </div>
 
-          <div className="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-white/[0.04] border border-white/[0.06]">
-            <Calendar size={12} className="text-apple-gray" />
-            <span className="text-[12.5px] text-white/90 font-mono tabular-nums font-medium">
+          {/* All time stats badge */}
+          <div className="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-white/[0.04] border border-white/[0.06] text-[11.5px] text-apple-secondary font-medium">
+            <span>All-time</span>
+            <span className="text-white font-mono font-semibold tabular-nums bg-white/[0.06] px-1.5 py-0.2 rounded border border-white/5">{myLogs.length}</span>
+          </div>
+
+          {/* Date badge */}
+          <div className="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+            <Calendar size={12} />
+            <span className="text-[12px] font-mono tabular-nums font-semibold">
               {new Date().toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
             </span>
           </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-3">
-        <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
-          <p className="text-[10.5px] font-medium tracking-[0.18em] uppercase text-apple-secondary">Today</p>
-          <p className="text-[24px] font-semibold text-white tabular-nums leading-none mt-2.5">
-            {todayCount}
-          </p>
-          <p className="text-[11px] text-apple-tertiary mt-1.5">
-            {todayCount === 0 ? 'nothing logged' : todayCount === 1 ? 'entry logged' : 'entries logged'}
-          </p>
-        </div>
-        <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
-          <p className="text-[10.5px] font-medium tracking-[0.18em] uppercase text-apple-secondary">All time</p>
-          <p className="text-[24px] font-semibold text-white tabular-nums leading-none mt-2.5">
-            {myLogs.length}
-          </p>
-          <p className="text-[11px] text-apple-tertiary mt-1.5">total entries</p>
         </div>
       </div>
 
@@ -510,11 +584,12 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
               </label>
               <textarea
                 id="dailylog-description"
-                rows={3}
+                ref={textareaRef}
                 required
                 placeholder="What did you accomplish?"
                 value={description}
                 onChange={e => setDescription(e.target.value)}
+                style={{ minHeight: '80px', height: 'auto' }}
                 className="w-full px-3.5 py-2.5 bg-white/[0.04] border border-white/[0.08] rounded-lg text-[14px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] focus:bg-white/[0.06] transition-colors outline-none resize-none leading-relaxed"
               />
             </div>
