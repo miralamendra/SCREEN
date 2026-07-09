@@ -302,71 +302,89 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
         className="group relative py-2 border-b border-apple-border/50 last:border-0 transition-colors"
       >
         {!isEditing ? (
-          <div className="flex items-start gap-3">
-            <div 
-              className="w-1.5 h-2 rounded-full mt-2 shrink-0" 
-              style={{ backgroundColor: categories.find(c => c.name === log.category)?.color || '#9ca3af' }} 
-            />
-            <div className="flex-1 min-w-0">
-              <div className="space-y-1">
-                {renderFormattedDescription(log.description)}
-              </div>
-
-              <div className="flex items-center gap-2 mt-2 flex-wrap">
-                {role === 'supervisor' && (
-                  <span className="inline-flex items-center gap-1 text-[12px] font-semibold px-2 py-0.5 rounded-md border border-white/10 bg-white/[0.05] text-apple-secondary uppercase tracking-[0.06em]">
-                    {log.person}
-                  </span>
+          <div className="flex items-start justify-between gap-4 w-full">
+            {/* Left side: Dot + Description */}
+            <div className="flex-1 flex items-start gap-3 min-w-0">
+              <div 
+                className="w-1.5 h-2 rounded-full mt-2 shrink-0" 
+                style={{ backgroundColor: categories.find(c => c.name === log.category)?.color || '#9ca3af' }} 
+              />
+              <div className="flex-1 min-w-0">
+                <div className="space-y-1">
+                  {renderFormattedDescription(log.description)}
+                </div>
+                {log.takeaway && (
+                  <div className="mt-2 pl-3 border-l border-apple-border/50">
+                    <p className="text-[12px] text-white/60 leading-relaxed italic">
+                      {log.takeaway}
+                    </p>
+                  </div>
                 )}
-                <span
-                  className="inline-flex items-center gap-1 text-[12px] font-semibold px-2 py-0.5 rounded-md border uppercase tracking-[0.06em]"
-                  style={{ 
-                    color: categories.find(c => c.name === log.category)?.color || '#9ca3af',
-                    borderColor: categories.find(c => c.name === log.category)?.color || '#9ca3af',
-                    backgroundColor: (categories.find(c => c.name === log.category)?.color || '#9ca3af') + '1A'
-                  }}
-                >
-                  {log.category}
-                </span>
+              </div>
+            </div>
+
+            {/* Right side: Fixed width table columns for tags and links */}
+            <div className="flex items-center gap-2 shrink-0 select-none">
+              {/* Link cell */}
+              <div className="w-6 flex items-center justify-center shrink-0">
                 {log.link && (
                   <a
                     href={log.link}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-[12px] text-white/70 hover:text-white inline-flex items-center gap-1 transition-colors"
+                    className="text-apple-secondary hover:text-white p-1 rounded hover:bg-apple-elevated transition-colors"
+                    title="Open link"
                   >
-                    <ExternalLink size={10} />
-                    <span>Open link</span>
+                    <ExternalLink size={12} />
                   </a>
                 )}
               </div>
 
-              {log.takeaway && (
-                <div className="mt-2 pl-3 border-l-2 border-emerald-400/30">
-                  <p className="text-[12px] text-white/80 leading-relaxed italic">
-                    {log.takeaway}
-                  </p>
+              {/* Person cell (Supervisor view only) */}
+              {role === 'supervisor' && (
+                <div className="w-20 flex items-center justify-center shrink-0">
+                  <span className="inline-flex items-center justify-center text-[12px] font-mono px-2 py-0.5 rounded border border-apple-border bg-apple-surface text-apple-secondary truncate w-full text-center">
+                    {log.person}
+                  </span>
+                </div>
+              )}
+
+              {/* Category cell */}
+              <div className="w-24 flex items-center justify-center shrink-0">
+                <span
+                  className="inline-flex items-center justify-center text-[12px] font-mono px-2 py-0.5 rounded border tracking-[0.02em] w-full text-center truncate"
+                  style={{ 
+                    color: categories.find(c => c.name === log.category)?.color || '#9ca3af',
+                    borderColor: categories.find(c => c.name === log.category)?.color || '#9ca3af',
+                    backgroundColor: (categories.find(c => c.name === log.category)?.color || '#9ca3af') + '10'
+                  }}
+                >
+                  {log.category}
+                </span>
+              </div>
+
+              {/* Actions cell (Researcher only) */}
+              {role !== 'supervisor' && (
+                <div className="w-12 flex items-center justify-end shrink-0 gap-1">
+                  <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button
+                      onClick={() => startEdit(log)}
+                      className="p-1 text-apple-tertiary hover:text-emerald-400/90 rounded hover:bg-apple-elevated transition-colors"
+                      aria-label="Edit log"
+                    >
+                      <Pencil size={11} />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(log.id)}
+                      className="p-1 text-apple-tertiary hover:text-red-400/90 rounded hover:bg-apple-elevated transition-colors"
+                      aria-label="Delete log"
+                    >
+                      <Trash2 size={11} />
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
-            {role !== 'supervisor' && (
-              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-                <button
-                  onClick={() => startEdit(log)}
-                  className="p-1.5 text-apple-tertiary hover:text-emerald-400/90 rounded-md hover:bg-white/[0.04] transition-colors"
-                  aria-label="Edit log"
-                >
-                  <Pencil size={12} />
-                </button>
-                <button
-                  onClick={() => handleDelete(log.id)}
-                  className="p-1.5 text-apple-tertiary hover:text-red-400/90 rounded-md hover:bg-white/[0.04] transition-colors"
-                  aria-label="Delete log"
-                >
-                  <Trash2 size={12} />
-                </button>
-              </div>
-            )}
           </div>
         ) : (
           <div className="space-y-3 fade-in">
