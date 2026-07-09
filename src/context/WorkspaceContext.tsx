@@ -85,12 +85,13 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
     const fetchAllData = async () => {
       try {
-        const [catsRes, logsRes, refsRes, delsRes, meetsRes] = await Promise.all([
+        const [catsRes, logsRes, refsRes, delsRes, meetsRes, tasksRes] = await Promise.all([
           client.from('categories').select('*'),
           client.from('daily_logs').select('*'),
           client.from('weekly_reflections').select('*'),
           client.from('deliverables').select('*'),
           client.from('meetings').select('*'),
+          client.from('tasks').select('*'),
         ]);
 
         if (catsRes.error) throw catsRes.error;
@@ -98,6 +99,7 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         if (refsRes.error) throw refsRes.error;
         if (delsRes.error) throw delsRes.error;
         if (meetsRes.error) throw meetsRes.error;
+        if (tasksRes.error) throw tasksRes.error;
 
         console.log('Supabase Connected Successfully.');
         console.log('Fetched Deliverables count:', delsRes.data?.length, delsRes.data);
@@ -132,6 +134,17 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           outcome: m.outcome || ''
         }));
 
+        const tasks: TaskItem[] = (tasksRes.data && tasksRes.data.length > 0 ? tasksRes.data : initialWorkspaceData.tasks).map((t: any) => ({
+          id: t.id,
+          identifier: t.identifier,
+          title: t.title,
+          status: t.status,
+          priority: t.priority || 'No priority',
+          assignee: t.assignee,
+          date: t.date || '',
+          labels: t.labels || []
+        }));
+
         setData({
           categories: catsRes.data || [],
           dailyLogs: logsRes.data || [],
@@ -139,7 +152,7 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           deliverables,
           roadmaps: initialWorkspaceData.roadmaps,
           meetings,
-          tasks: initialWorkspaceData.tasks // Fallback since tasks are new, no supabase table yet
+          tasks
         });
         setSyncMode('synced');
       } catch (err) {
@@ -539,7 +552,19 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       ...prev,
       tasks: [...prev.tasks, newTask]
     }));
-    // Note: No Supabase sync added for tasks yet.
+    
+    if (syncMode === 'synced' && supabase) {
+      await supabase.from('tasks').insert([{
+        id: newTask.id,
+        identifier: newTask.identifier,
+        title: newTask.title,
+        status: newTask.status,
+        priority: newTask.priority,
+        assignee: newTask.assignee,
+        date: newTask.date,
+        labels: newTask.labels
+      }]);
+    }
   };
 
   const updateTask = async (id: string, updates: Partial<Omit<TaskItem, 'id' | 'identifier'>>) => {
@@ -547,6 +572,10 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       ...prev,
       tasks: prev.tasks.map(t => t.id === id ? { ...t, ...updates } : t)
     }));
+
+    if (syncMode === 'synced' && supabase) {
+      await supabase.from('tasks').update(updates).eq('id', id);
+    }
   };
 
   const deleteTask = async (id: string) => {
@@ -554,6 +583,10 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       ...prev,
       tasks: prev.tasks.filter(t => t.id !== id)
     }));
+
+    if (syncMode === 'synced' && supabase) {
+      await supabase.from('tasks').delete().eq('id', id);
+    }
   };
 
   return (
