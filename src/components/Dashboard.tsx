@@ -416,11 +416,11 @@ export const Dashboard: React.FC = () => {
                     setTimeout(() => setNewLogTrigger(t => t + 1), 50);
                   }
                 }}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white text-apple-base rounded-md text-[12px] font-medium hover:bg-white/90 transition-colors ml-1"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 border rounded-lg text-[12px] font-medium text-white/95 animate-pulse-dark-green hover:text-white transition-colors ml-1"
               >
                 <Plus size={12} strokeWidth={2.5} />
                 <span>New entry</span>
-                <kbd className="hidden lg:inline-flex items-center px-1 py-0.5 rounded text-[10px] font-mono bg-black/10 text-apple-base">
+                <kbd className="hidden lg:inline-flex items-center px-1 py-0.5 rounded text-[10px] font-mono bg-white/10 text-white/70 ml-1">
                   C
                 </kbd>
               </button>
@@ -442,7 +442,7 @@ export const Dashboard: React.FC = () => {
               if (activeTab === 'log') setNewLogTrigger(t => t + 1);
               else { setActiveTab('log'); setTimeout(() => setNewLogTrigger(t => t + 1), 50); }
             }}
-            className="inline-flex items-center gap-1 px-2.5 py-1 bg-white text-apple-base rounded-md text-[12px] font-medium"
+            className="inline-flex items-center gap-1 px-2.5 py-1 border rounded-lg text-[12px] font-medium text-white/95 animate-pulse-dark-green hover:text-white transition-colors"
           >
             <Plus size={12} strokeWidth={2.5} />
             <span>New</span>
