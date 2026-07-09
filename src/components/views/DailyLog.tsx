@@ -701,13 +701,15 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
                           className="text-apple-tertiary/50 shrink-0 transition-transform duration-200"
                           style={{ transform: isCollapsed ? 'rotate(0deg)' : 'rotate(90deg)' }}
                         />
-                        <span className={`text-[11px] font-semibold tracking-[0.08em] uppercase shrink-0 ${
-                          isT ? 'text-emerald-400' : 'text-white/40'
-                        }`}>
-                          {dayLabel}
-                        </span>
-                        <span className="text-[10px] text-white/20 shrink-0">
-                          {dateLabel}
+                        <span className="shrink-0 flex items-baseline gap-1.5">
+                          <span className={`text-[12px] font-semibold tracking-[0.06em] uppercase ${
+                            isT ? 'text-emerald-400' : 'text-white/60'
+                          }`}>
+                            {dayLabel}
+                          </span>
+                          <span className="text-[10px] text-white/25">
+                            ({dateLabel})
+                          </span>
                         </span>
                         <div className="flex-1 h-px bg-white/[0.05]" />
                         <span className="text-[10px] text-white/20 shrink-0">
