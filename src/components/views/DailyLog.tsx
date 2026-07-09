@@ -703,30 +703,28 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
                     <section key={dateKey}>
                       <button
                         onClick={() => toggleSection(dateKey)}
-                        className="w-full flex items-center gap-3 px-3 py-2 mb-1 rounded-md bg-white/[0.025] border border-white/[0.06] hover:bg-white/[0.04] transition-colors cursor-pointer"
+                        className="w-full flex items-center gap-3 pt-6 pb-1.5 mb-1 group cursor-pointer"
                       >
                         <ChevronRight
-                          size={12}
-                          className="text-apple-tertiary shrink-0 transition-transform duration-200"
+                          size={10}
+                          className="text-apple-tertiary/50 shrink-0 transition-transform duration-200"
                           style={{ transform: isCollapsed ? 'rotate(0deg)' : 'rotate(90deg)' }}
                         />
-                        <div className="flex items-baseline gap-2">
-                          <span className={`text-[12px] font-semibold tracking-tight leading-none ${
-                            isT ? 'text-emerald-400' : 'text-white/80'
-                          }`}>
-                            {dayLabel}
-                          </span>
-                          <span className="text-[11px] font-mono text-apple-tertiary tabular-nums">
-                            {dateLabel}
-                          </span>
-                        </div>
-                        <div className="flex-1" />
-                        <span className="text-[11px] font-mono text-apple-tertiary tabular-nums">
-                          {groupedLogs[dateKey].length} {groupedLogs[dateKey].length === 1 ? 'entry' : 'entries'}
+                        <span className={`text-[11px] font-semibold tracking-[0.08em] uppercase shrink-0 ${
+                          isT ? 'text-emerald-400' : 'text-white/40'
+                        }`}>
+                          {dayLabel}
+                        </span>
+                        <span className="text-[10px] font-mono text-white/20 tabular-nums shrink-0">
+                          {dateLabel}
+                        </span>
+                        <div className="flex-1 h-px bg-white/[0.05]" />
+                        <span className="text-[10px] font-mono text-white/20 tabular-nums shrink-0">
+                          {groupedLogs[dateKey].length}
                         </span>
                       </button>
                       {!isCollapsed && (
-                        <div className="space-y-0 mb-6">
+                        <div className="space-y-0 mb-2">
                           {groupedLogs[dateKey].map(log => renderLogCard(log))}
                         </div>
                       )}
@@ -745,23 +743,23 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
                     <section key={weekKey}>
                       <button
                         onClick={() => toggleSection(weekKey)}
-                        className="w-full flex items-center gap-3 px-3 py-2 mb-1 rounded-md bg-white/[0.025] border border-white/[0.06] hover:bg-white/[0.04] transition-colors cursor-pointer"
+                        className="w-full flex items-center gap-3 pt-6 pb-1.5 mb-1 group cursor-pointer"
                       >
                         <ChevronRight
-                          size={12}
-                          className="text-apple-tertiary shrink-0 transition-transform duration-200"
+                          size={10}
+                          className="text-apple-tertiary/50 shrink-0 transition-transform duration-200"
                           style={{ transform: isCollapsed ? 'rotate(0deg)' : 'rotate(90deg)' }}
                         />
-                        <span className="text-[12px] font-semibold text-white/80 tracking-tight leading-none">
+                        <span className="text-[11px] font-semibold tracking-[0.08em] uppercase text-white/40 shrink-0">
                           {week.label}
                         </span>
-                        <div className="flex-1" />
-                        <span className="text-[11px] font-mono text-apple-tertiary tabular-nums">
-                          {week.items.length} {week.items.length === 1 ? 'entry' : 'entries'}
+                        <div className="flex-1 h-px bg-white/[0.05]" />
+                        <span className="text-[10px] font-mono text-white/20 tabular-nums shrink-0">
+                          {week.items.length}
                         </span>
                       </button>
                       {!isCollapsed && (
-                        <div className="space-y-0 mb-6">
+                        <div className="space-y-0 mb-2">
                           {week.items.map(log => renderLogCard(log))}
                         </div>
                       )}
@@ -780,23 +778,23 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
                     <section key={monthKey}>
                       <button
                         onClick={() => toggleSection(monthKey)}
-                        className="w-full flex items-center gap-3 px-3 py-2 mb-1 rounded-md bg-white/[0.025] border border-white/[0.06] hover:bg-white/[0.04] transition-colors cursor-pointer"
+                        className="w-full flex items-center gap-3 pt-6 pb-1.5 mb-1 group cursor-pointer"
                       >
                         <ChevronRight
-                          size={12}
-                          className="text-apple-tertiary shrink-0 transition-transform duration-200"
+                          size={10}
+                          className="text-apple-tertiary/50 shrink-0 transition-transform duration-200"
                           style={{ transform: isCollapsed ? 'rotate(0deg)' : 'rotate(90deg)' }}
                         />
-                        <span className="text-[12px] font-semibold text-white/80 tracking-tight leading-none">
+                        <span className="text-[11px] font-semibold tracking-[0.08em] uppercase text-white/40 shrink-0">
                           {m.label}
                         </span>
-                        <div className="flex-1" />
-                        <span className="text-[11px] font-mono text-apple-tertiary tabular-nums">
-                          {m.items.length} {m.items.length === 1 ? 'entry' : 'entries'}
+                        <div className="flex-1 h-px bg-white/[0.05]" />
+                        <span className="text-[10px] font-mono text-white/20 tabular-nums shrink-0">
+                          {m.items.length}
                         </span>
                       </button>
                       {!isCollapsed && (
-                        <div className="space-y-0 mb-6">
+                        <div className="space-y-0 mb-2">
                           {m.items.map(log => renderLogCard(log))}
                         </div>
                       )}
