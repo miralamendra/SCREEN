@@ -65,6 +65,7 @@ export interface TaskItem {
   assignee: 'Miral' | 'Shalini';
   date: string; // YYYY-MM-DD, optional
   labels: string[];
+  category?: string;
 }
 
 export interface WorkspaceData {

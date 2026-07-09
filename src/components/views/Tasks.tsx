@@ -9,12 +9,15 @@ import {
   ChevronRight, 
   ChevronDown, 
   Plus, 
-  CircleDot
+  CircleDot,
+  Trash2,
+  X
 } from 'lucide-react';
-import type { TaskItem, TaskStatus } from '../../data/initialState';
+import type { TaskItem, TaskStatus, TaskPriority } from '../../data/initialState';
 import { Avatar } from '../ui/Avatar';
 
 const STATUS_GROUPS: TaskStatus[] = ['Backlog', 'Todo', 'In Progress', 'Done', 'Canceled'];
+const PRIORITIES: TaskPriority[] = ['Urgent', 'High', 'Medium', 'Low', 'No priority'];
 
 const StatusIcon = ({ status, className = '' }: { status: TaskStatus, className?: string }) => {
   const size = 15;
@@ -28,24 +31,260 @@ const StatusIcon = ({ status, className = '' }: { status: TaskStatus, className?
   }
 };
 
+const PriorityBadge = ({ priority }: { priority: TaskPriority }) => {
+  let colors = 'text-apple-secondary bg-white/[0.02] border-white/10';
+  switch (priority) {
+    case 'Urgent':
+      colors = 'text-red-400 bg-red-500/10 border-red-500/25';
+      break;
+    case 'High':
+      colors = 'text-orange-400 bg-orange-500/10 border-orange-500/25';
+      break;
+    case 'Medium':
+      colors = 'text-yellow-400 bg-yellow-500/10 border-yellow-500/25';
+      break;
+    case 'Low':
+      colors = 'text-blue-400 bg-blue-500/10 border-blue-500/25';
+      break;
+  }
+
+  return (
+    <span className={`px-1.5 py-0.5 rounded-[4px] border text-[10px] font-medium tracking-wide uppercase ${colors}`}>
+      {priority}
+    </span>
+  );
+};
+
+interface TaskModalProps {
+  task?: TaskItem;
+  defaultAssignee: 'Miral' | 'Shalini';
+  onClose: () => void;
+  onSave: (taskData: Omit<TaskItem, 'id' | 'identifier'> & { id?: string }) => void;
+  onDelete?: (id: string) => void;
+}
+
+const TaskModal: React.FC<TaskModalProps> = ({ task, defaultAssignee, onClose, onSave, onDelete }) => {
+  const { data: { categories }, role } = useWorkspace();
+  const [title, setTitle] = useState(task?.title || '');
+  const [status, setStatus] = useState<TaskStatus>(task?.status || 'Todo');
+  const [priority, setPriority] = useState<TaskPriority>(task?.priority || 'No priority');
+  const [assignee, setAssignee] = useState<'Miral' | 'Shalini'>(task?.assignee || defaultAssignee);
+  const [category, setCategory] = useState(task?.category || '');
+  const [date, setDate] = useState(task?.date || '');
+  const [labelsStr, setLabelsStr] = useState(task?.labels.join(', ') || '');
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title.trim()) return;
+
+    const labels = labelsStr.split(',').map(l => l.trim()).filter(Boolean);
+    onSave({
+      id: task?.id,
+      title: title.trim(),
+      status,
+      priority,
+      assignee,
+      category: category || undefined,
+      date,
+      labels
+    });
+  };
+
+  const isSupervisor = role === 'supervisor';
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+      <form 
+        onSubmit={handleSubmit}
+        className="bg-[#1c1c1e] border border-white/10 rounded-2xl w-full max-w-lg shadow-2xl flex flex-col max-h-[90vh] overflow-hidden fade-in"
+      >
+        <div className="flex items-center justify-between p-4 border-b border-white/10">
+          <h2 className="text-[15px] font-semibold text-white">
+            {task ? `Edit Task ${task.identifier}` : 'Create New Task'}
+          </h2>
+          <button type="button" onClick={onClose} className="text-apple-gray hover:text-white transition-colors">
+            <X size={18} />
+          </button>
+        </div>
+
+        <div className="p-5 overflow-y-auto space-y-4 flex-1">
+          <div className="space-y-1">
+            <label className="block text-[10px] font-semibold tracking-wider text-apple-secondary uppercase">
+              Title
+            </label>
+            <input 
+              type="text" 
+              placeholder="Task summary or title..."
+              value={title}
+              onChange={e => setTitle(e.target.value)}
+              className="w-full bg-black/20 border border-white/10 rounded-lg px-3 py-2 text-[13px] text-white focus:outline-none focus:border-white/20"
+              required
+              autoFocus
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label className="block text-[10px] font-semibold tracking-wider text-apple-secondary uppercase">
+                Status
+              </label>
+              <select
+                value={status}
+                onChange={e => setStatus(e.target.value as TaskStatus)}
+                className="w-full bg-black/20 border border-white/10 rounded-lg px-3 py-2 text-[13px] text-white focus:outline-none focus:border-white/20 cursor-pointer"
+              >
+                {STATUS_GROUPS.map(s => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="space-y-1">
+              <label className="block text-[10px] font-semibold tracking-wider text-apple-secondary uppercase">
+                Priority
+              </label>
+              <select
+                value={priority}
+                onChange={e => setPriority(e.target.value as TaskPriority)}
+                className="w-full bg-black/20 border border-white/10 rounded-lg px-3 py-2 text-[13px] text-white focus:outline-none focus:border-white/20 cursor-pointer"
+              >
+                {PRIORITIES.map(p => (
+                  <option key={p} value={p}>{p}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label className="block text-[10px] font-semibold tracking-wider text-apple-secondary uppercase">
+                Assignee
+              </label>
+              {isSupervisor ? (
+                <select
+                  value={assignee}
+                  onChange={e => setAssignee(e.target.value as 'Miral' | 'Shalini')}
+                  className="w-full bg-black/20 border border-white/10 rounded-lg px-3 py-2 text-[13px] text-white focus:outline-none focus:border-white/20 cursor-pointer"
+                >
+                  <option value="Miral">Miral</option>
+                  <option value="Shalini">Shalini</option>
+                </select>
+              ) : (
+                <div className="w-full bg-white/[0.02] border border-white/10 rounded-lg px-3 py-2 text-[13px] text-apple-gray flex items-center gap-2">
+                  <Avatar name={assignee} size="xs" />
+                  <span>{assignee} (Current Profile)</span>
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-1">
+              <label className="block text-[10px] font-semibold tracking-wider text-apple-secondary uppercase">
+                Category
+              </label>
+              <select
+                value={category}
+                onChange={e => setCategory(e.target.value)}
+                className="w-full bg-black/20 border border-white/10 rounded-lg px-3 py-2 text-[13px] text-white focus:outline-none focus:border-white/20 cursor-pointer"
+              >
+                <option value="">None</option>
+                {categories.map(c => (
+                  <option key={c.id} value={c.name}>{c.name}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label className="block text-[10px] font-semibold tracking-wider text-apple-secondary uppercase">
+                Due Date
+              </label>
+              <input 
+                type="date"
+                value={date}
+                onChange={e => setDate(e.target.value)}
+                className="w-full bg-black/20 border border-white/10 rounded-lg px-3 py-2 text-[13px] text-white focus:outline-none focus:border-white/20"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="block text-[10px] font-semibold tracking-wider text-apple-secondary uppercase">
+                Labels (comma-separated)
+              </label>
+              <input 
+                type="text"
+                placeholder="e.g. Design, Research"
+                value={labelsStr}
+                onChange={e => setLabelsStr(e.target.value)}
+                className="w-full bg-black/20 border border-white/10 rounded-lg px-3 py-2 text-[13px] text-white focus:outline-none focus:border-white/20"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="p-4 border-t border-white/10 flex items-center justify-between">
+          <div>
+            {task && onDelete && (
+              <button
+                type="button"
+                onClick={() => onDelete(task.id)}
+                className="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-md text-[12px] font-medium transition-colors flex items-center gap-1.5"
+              >
+                <Trash2 size={13} />
+                <span>Delete Task</span>
+              </button>
+            )}
+          </div>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-3 py-1.5 text-[12px] text-apple-secondary hover:text-white/85 rounded-md hover:bg-white/[0.04] transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-1.5 bg-white text-apple-base rounded-md text-[12px] font-semibold hover:bg-white/90 transition-colors"
+            >
+              {task ? 'Save Changes' : 'Create Task'}
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  );
+};
+
 interface TaskGroupProps {
   status: TaskStatus;
   tasks: TaskItem[];
   assignee: 'Miral' | 'Shalini';
   isCollapsed: boolean;
   onToggle: () => void;
-  onAddTask: (title: string, status: TaskStatus, assignee: 'Miral' | 'Shalini') => void;
+  onAddTaskInline: (title: string, status: TaskStatus, assignee: 'Miral' | 'Shalini') => void;
+  onTaskClick: (task: TaskItem) => void;
+  onDeleteTask: (id: string) => void;
 }
 
-const TaskGroup: React.FC<TaskGroupProps> = ({ status, tasks, assignee, isCollapsed, onToggle, onAddTask }) => {
-  const { updateTask } = useWorkspace();
+const TaskGroup: React.FC<TaskGroupProps> = ({ 
+  status, 
+  tasks, 
+  assignee, 
+  isCollapsed, 
+  onToggle, 
+  onAddTaskInline, 
+  onTaskClick,
+  onDeleteTask
+}) => {
+  const { data: { categories }, updateTask } = useWorkspace();
   const [isAdding, setIsAdding] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState('');
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       if (newTaskTitle.trim()) {
-        onAddTask(newTaskTitle.trim(), status, assignee);
+        onAddTaskInline(newTaskTitle.trim(), status, assignee);
         setNewTaskTitle('');
         setIsAdding(false);
       }
@@ -59,7 +298,6 @@ const TaskGroup: React.FC<TaskGroupProps> = ({ status, tasks, assignee, isCollap
 
   return (
     <div className="flex flex-col">
-      {/* Group Header */}
       <div 
         className="flex items-center gap-2 py-2 px-1 cursor-pointer group hover:bg-white/[0.02] rounded-md transition-colors w-max pr-4"
         onClick={onToggle}
@@ -70,7 +308,6 @@ const TaskGroup: React.FC<TaskGroupProps> = ({ status, tasks, assignee, isCollap
         <span className="text-[11.5px] text-apple-tertiary font-mono ml-1">{tasks.length}</span>
       </div>
 
-      {/* Group List */}
       {!isCollapsed && (
         <div className="mt-1 flex flex-col border border-white/[0.04] rounded-xl overflow-hidden bg-white/[0.01]">
           {tasks.length === 0 && !isAdding ? (
@@ -78,58 +315,92 @@ const TaskGroup: React.FC<TaskGroupProps> = ({ status, tasks, assignee, isCollap
               No tasks
             </div>
           ) : (
-            tasks.map((task, index) => (
-              <div 
-                key={task.id} 
-                className={`group flex items-center gap-3 px-4 py-2.5 hover:bg-white/[0.04] transition-colors cursor-default ${index !== tasks.length - 1 || isAdding ? 'border-b border-white/[0.03]' : ''}`}
-              >
-                <div className="flex-shrink-0 w-16 text-[11.5px] font-mono text-apple-tertiary group-hover:text-apple-secondary transition-colors">
-                  {task.identifier}
-                </div>
-                
-                <div className="relative group/status flex-shrink-0 cursor-pointer">
-                  <StatusIcon status={task.status} />
-                  <select
-                    value={task.status}
-                    onChange={(e) => updateTask(task.id, { status: e.target.value as TaskStatus })}
-                    className="absolute inset-0 opacity-0 cursor-pointer text-[12px]"
-                    title="Change status"
-                  >
-                    {STATUS_GROUPS.map(s => <option key={s} value={s}>{s}</option>)}
-                  </select>
-                </div>
-                
-                <div className="flex-1 min-w-0 flex items-center gap-2">
-                  <span className={`text-[13px] font-medium truncate ${task.status === 'Done' || task.status === 'Canceled' ? 'text-apple-tertiary line-through decoration-white/20' : 'text-white/90'}`}>
-                    {task.title}
-                  </span>
-                </div>
-                
-                <div className="flex-shrink-0 flex items-center gap-2">
-                  {task.labels && task.labels.map(label => (
-                    <span 
-                      key={label}
-                      className="px-1.5 py-0.5 rounded-[4px] border border-white/[0.08] text-[10px] text-apple-secondary bg-white/[0.03]"
-                    >
-                      {label}
-                    </span>
-                  ))}
-                </div>
-                
-                {task.date && (
-                  <div className="flex-shrink-0 w-16 text-right text-[11px] text-apple-tertiary whitespace-nowrap">
-                    {new Date(task.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+            tasks.map((task, index) => {
+              const catObj = categories.find(c => c.name === task.category);
+              return (
+                <div 
+                  key={task.id} 
+                  className={`group flex items-center gap-3 px-4 py-2.5 hover:bg-white/[0.03] transition-colors cursor-pointer ${index !== tasks.length - 1 || isAdding ? 'border-b border-white/[0.03]' : ''}`}
+                  onClick={() => onTaskClick(task)}
+                >
+                  <div className="flex-shrink-0 w-16 text-[11.5px] font-mono text-apple-tertiary group-hover:text-apple-secondary transition-colors">
+                    {task.identifier}
                   </div>
-                )}
-                
-                <div className="flex-shrink-0 ml-2" title={task.assignee}>
-                  <Avatar name={task.assignee} size="xs" />
+                  
+                  <div 
+                    className="relative group/status flex-shrink-0 cursor-pointer"
+                    onClick={e => e.stopPropagation()}
+                  >
+                    <StatusIcon status={task.status} />
+                    <select
+                      value={task.status}
+                      onChange={(e) => updateTask(task.id, { status: e.target.value as TaskStatus })}
+                      className="absolute inset-0 opacity-0 cursor-pointer text-[12px]"
+                      title="Change status"
+                    >
+                      {STATUS_GROUPS.map(s => <option key={s} value={s}>{s}</option>)}
+                    </select>
+                  </div>
+                  
+                  <div className="flex-1 min-w-0 flex items-center gap-2">
+                    <span className={`text-[13px] font-medium truncate ${task.status === 'Done' || task.status === 'Canceled' ? 'text-apple-tertiary line-through decoration-white/20' : 'text-white/90'}`}>
+                      {task.title}
+                    </span>
+                  </div>
+                  
+                  <div className="flex-shrink-0 flex items-center gap-2">
+                    {task.priority && task.priority !== 'No priority' && (
+                      <PriorityBadge priority={task.priority} />
+                    )}
+
+                    {task.category && catObj && (
+                      <span 
+                        className="px-1.5 py-0.5 rounded-[4px] border text-[9.5px] uppercase font-bold tracking-wider"
+                        style={{ 
+                          color: catObj.color,
+                          borderColor: catObj.color + '33',
+                          backgroundColor: catObj.color + '15'
+                        }}
+                      >
+                        {task.category}
+                      </span>
+                    )}
+
+                    {task.labels && task.labels.map(label => (
+                      <span 
+                        key={label}
+                        className="px-1.5 py-0.5 rounded-[4px] border border-white/[0.08] text-[10px] text-apple-secondary bg-white/[0.03]"
+                      >
+                        {label}
+                      </span>
+                    ))}
+                  </div>
+                  
+                  {task.date && (
+                    <div className="flex-shrink-0 w-16 text-right text-[11px] text-apple-tertiary whitespace-nowrap">
+                      {new Date(task.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                    </div>
+                  )}
+                  
+                  <div className="flex-shrink-0 ml-2" title={task.assignee}>
+                    <Avatar name={task.assignee} size="xs" />
+                  </div>
+
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDeleteTask(task.id);
+                    }}
+                    className="opacity-0 group-hover:opacity-100 p-1 text-apple-secondary hover:text-red-400 hover:bg-red-400/10 rounded transition-all ml-1 shrink-0"
+                    title="Delete task"
+                  >
+                    <Trash2 size={13} />
+                  </button>
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
           
-          {/* Inline quick add */}
           {isAdding ? (
             <div className="flex items-center gap-3 px-4 py-2 bg-white/[0.02]">
               <div className="flex-shrink-0 w-16" />
@@ -166,10 +437,12 @@ const TaskGroup: React.FC<TaskGroupProps> = ({ status, tasks, assignee, isCollap
 };
 
 export const Tasks: React.FC = () => {
-  const { data, role, addTask } = useWorkspace();
+  const { data, role, addTask, updateTask, deleteTask } = useWorkspace();
   const { tasks } = data;
   
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<TaskItem | undefined>(undefined);
 
   const toggleGroup = (key: string) => {
     setCollapsedGroups(prev => ({
@@ -178,7 +451,31 @@ export const Tasks: React.FC = () => {
     }));
   };
 
-  const handleAddTask = (title: string, status: TaskStatus, assignee: 'Miral' | 'Shalini') => {
+  const handleOpenNewTask = () => {
+    setSelectedTask(undefined);
+    setModalOpen(true);
+  };
+
+  const handleTaskClick = (task: TaskItem) => {
+    setSelectedTask(task);
+    setModalOpen(true);
+  };
+
+  const handleSaveTask = (taskData: Omit<TaskItem, 'id' | 'identifier'> & { id?: string }) => {
+    if (taskData.id) {
+      updateTask(taskData.id, taskData);
+    } else {
+      addTask(taskData);
+    }
+    setModalOpen(false);
+  };
+
+  const handleDeleteTask = (id: string) => {
+    deleteTask(id);
+    setModalOpen(false);
+  };
+
+  const handleAddTaskInline = (title: string, status: TaskStatus, assignee: 'Miral' | 'Shalini') => {
     addTask({
       title,
       status,
@@ -224,7 +521,9 @@ export const Tasks: React.FC = () => {
               assignee={assignee}
               isCollapsed={!!collapsedGroups[groupKey]}
               onToggle={() => toggleGroup(groupKey)}
-              onAddTask={handleAddTask}
+              onAddTaskInline={handleAddTaskInline}
+              onTaskClick={handleTaskClick}
+              onDeleteTask={handleDeleteTask}
             />
           );
         })}
@@ -240,6 +539,13 @@ export const Tasks: React.FC = () => {
             Tasks
           </h1>
         </div>
+        <button 
+          onClick={handleOpenNewTask}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white text-apple-base rounded-md text-[12px] font-medium hover:bg-white/90 transition-colors"
+        >
+          <Plus size={14} />
+          <span>New Task</span>
+        </button>
       </div>
 
       {isSupervisor ? (
@@ -251,6 +557,16 @@ export const Tasks: React.FC = () => {
         <div className="max-w-4xl">
           {renderColumn(activePerson, role === 'shalini' ? shaliniTasks : miralTasks)}
         </div>
+      )}
+
+      {modalOpen && (
+        <TaskModal
+          task={selectedTask}
+          defaultAssignee={activePerson}
+          onClose={() => setModalOpen(false)}
+          onSave={handleSaveTask}
+          onDelete={handleDeleteTask}
+        />
       )}
     </div>
   );

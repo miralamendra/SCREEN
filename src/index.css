@@ -98,6 +98,11 @@
 }
 
 /* Input styling — Notion-like: quiet until focused */
+select option {
+  background-color: #141414 !important;
+  color: #ffffff !important;
+}
+
 input[type="date"],
 input[type="text"],
 input[type="url"],

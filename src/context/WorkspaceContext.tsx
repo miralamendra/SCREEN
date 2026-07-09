@@ -142,7 +142,8 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           priority: t.priority || 'No priority',
           assignee: t.assignee,
           date: t.date || '',
-          labels: t.labels || []
+          labels: t.labels || [],
+          category: t.category || ''
         }));
 
         setData({
@@ -562,7 +563,8 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         priority: newTask.priority,
         assignee: newTask.assignee,
         date: newTask.date,
-        labels: newTask.labels
+        labels: newTask.labels,
+        category: newTask.category || null
       }]);
     }
   };
@@ -574,7 +576,9 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }));
 
     if (syncMode === 'synced' && supabase) {
-      await supabase.from('tasks').update(updates).eq('id', id);
+      const updateData: any = { ...updates };
+      if (updates.category === '') updateData.category = null;
+      await supabase.from('tasks').update(updateData).eq('id', id);
     }
   };
 
