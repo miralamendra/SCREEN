@@ -51,6 +51,22 @@ export const Meetings: React.FC<MeetingsProps> = ({ newMeetingTrigger }) => {
     ? meetings
     : meetings.filter(m => m.attendees.includes(activePerson) || m.attendees.includes('Dr. Chathura'));
 
+  const handleDateClick = (dateStr: string) => {
+    const meet = myMeetings.find(m => m.date === dateStr);
+    if (meet) {
+      setTimeout(() => {
+        const el = document.getElementById(`meeting-row-${meet.id}`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          el.classList.add('bg-emerald-500/10', 'border-emerald-500/30', 'shadow-[0_0_12px_rgba(16,185,129,0.15)]');
+          setTimeout(() => {
+            el.classList.remove('bg-emerald-500/10', 'border-emerald-500/30', 'shadow-[0_0_12px_rgba(16,185,129,0.15)]');
+          }, 2000);
+        }
+      }, 50);
+    }
+  };
+
   const reset = () => {
     setTitle('');
     setLocationLink('');
@@ -403,7 +419,7 @@ export const Meetings: React.FC<MeetingsProps> = ({ newMeetingTrigger }) => {
       {/* Mini calendar sidebar */}
       <div className="hidden lg:block">
         <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-4 sticky top-4">
-          <MiniCalendar meetings={myMeetings} />
+          <MiniCalendar meetings={myMeetings} onDateClick={handleDateClick} />
         </div>
       </div>
       </div>
@@ -426,9 +442,10 @@ const sameDay = (a: Date, b: Date) =>
 
 interface MiniCalendarProps {
   meetings: typeof import('../../data/initialState').initialWorkspaceData.meetings;
+  onDateClick?: (dateStr: string) => void;
 }
 
-const MiniCalendar: React.FC<MiniCalendarProps> = ({ meetings }) => {
+const MiniCalendar: React.FC<MiniCalendarProps> = ({ meetings, onDateClick }) => {
   const today = new Date();
   const [currentDate, setCurrentDate] = useState(new Date());
 
@@ -485,9 +502,16 @@ const MiniCalendar: React.FC<MiniCalendarProps> = ({ meetings }) => {
             const mDate = new Date(m.date + 'T00:00:00');
             return sameDay(mDate, dateVal);
           });
+          const dateStr = `${dateVal.getFullYear()}-${String(dateVal.getMonth() + 1).padStart(2, '0')}-${String(dateVal.getDate()).padStart(2, '0')}`;
 
           return (
-            <div key={idx} className="relative flex flex-col items-center justify-center py-1">
+            <div 
+              key={idx} 
+              onClick={() => hasMeeting && onDateClick && onDateClick(dateStr)}
+              className={`relative flex flex-col items-center justify-center py-1 rounded transition-colors ${
+                hasMeeting ? 'cursor-pointer hover:bg-white/[0.06]' : ''
+              }`}
+            >
               <span className={`text-[12px] tabular-nums font-medium h-5 w-5 rounded-full flex items-center justify-center ${
                 isToday ? 'bg-white text-apple-base font-bold' : 'text-white/90'
               }`}>
