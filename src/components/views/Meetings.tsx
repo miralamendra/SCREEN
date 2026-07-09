@@ -103,7 +103,7 @@ export const Meetings: React.FC<MeetingsProps> = ({ newMeetingTrigger }) => {
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState(categories[0]?.name || '');
   const [locationLink, setLocationLink] = useState('');
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [date, setDate] = useState((() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; })());
   const [attendees, setAttendees] = useState<('Miral' | 'Shalini' | 'Dr. Chathura')[]>([]);
   const [outcome, setOutcome] = useState('');
 
@@ -145,7 +145,7 @@ export const Meetings: React.FC<MeetingsProps> = ({ newMeetingTrigger }) => {
     setLocationLink('');
     setOutcome('');
     setAttendees([]);
-    setDate(new Date().toISOString().split('T')[0]);
+    setDate((() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; })());
     setIsOpen(false);
   };
 

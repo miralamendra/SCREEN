@@ -6,13 +6,20 @@ import { ManageCategoriesModal } from '../ui/ManageCategoriesModal';
 import { SegmentedControl } from '../ui/SegmentedControl';
 import { useLocation } from 'react-router-dom';
 
-const todayStr = () => new Date().toISOString().split('T')[0];
+const localDateStr = (d: Date = new Date()) => {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+};
+
+const todayStr = () => localDateStr();
 
 const isToday = (d: string) => d === todayStr();
 const isYesterday = (d: string) => {
   const y = new Date();
   y.setDate(y.getDate() - 1);
-  return d === y.toISOString().split('T')[0];
+  return d === localDateStr(y);
 };
 const getWeekRangeLabel = (dateStr: string) => {
   const date = new Date(dateStr + 'T00:00:00');
