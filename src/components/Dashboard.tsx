@@ -146,16 +146,8 @@ export const Dashboard: React.FC = () => {
           markerColor="#6c6c6c"
           showIndex={true}
           showMarker={true}
-          proximityRadius={100}
-          maxShift={20}
-          falloff="smooth"
-          markerLength={24}
-          markerGap={8}
-          tickScale={0.5}
-          scaleTick={true}
-          itemGap={8}
+          itemGap={4}
           fontSize={13}
-          hoverSmoothing={90} activeSmoothing={750}
         />
       </div>
     );

@@ -14,92 +14,80 @@
   align-items: center;
   border-radius: 6px;
   padding: 7px 10px;
-  padding-left: calc(var(--marker-length) + var(--marker-gap) + 16px);
-  transition: background-color 0.18s ease;
+  padding-left: 14px;
   margin-bottom: var(--item-gap);
   z-index: 1;
+  /* Active bar on the left */
+  border-left: 2px solid transparent;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
 }
 
 .line-sidebar__item:last-child {
   margin-bottom: 0;
 }
 
-/* Active highlight — the gliding overlay. */
-.line-sidebar__active-marker {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 0;
-  background-color: rgba(255, 255, 255, 0.08);
-  border-radius: 6px;
-  pointer-events: none;
-  z-index: 0;
-  will-change: transform, height, opacity;
-}
-
-/* The accent-colored line that travels with the active item */
-.line-sidebar__active-marker::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 10px;
-  height: 1px;
-  width: var(--marker-length);
-  background-color: var(--accent-color);
-  transform: translateY(-50%) scaleX(1);
-  transform-origin: left center;
-  transition: none;
-  will-change: transform, background-color;
-}
-
 .line-sidebar__item:hover:not([data-active="true"]) {
   background-color: rgba(255, 255, 255, 0.04);
 }
 
-/* Label — JS drives the value smoothly via requestAnimationFrame.
-   No CSS transition here so JS owns the motion. */
+.line-sidebar__item[data-active="true"] {
+  background-color: rgba(34, 197, 94, 0.07);
+  border-left-color: var(--accent-color);
+}
+
+/* Label */
 .line-sidebar__label {
   position: relative;
   display: inline-flex;
   align-items: center;
   font-size: var(--font-size);
   line-height: 1.2;
-  /* color: hover-driven (effect) blended with the active "wake" that trails the gliding marker */
-  color: color-mix(
-    in srgb,
-    var(--accent-color) calc((var(--effect, 0) * 0.6 + var(--active-wake, 0) * 0.7) * 100%),
-    var(--text-color)
-  );
-  transform: translateX(calc(var(--effect, 0) * var(--max-shift)));
   width: 100%;
-  will-change: transform, color;
+  color: var(--text-color);
+  transition: color 0.15s ease;
+}
+
+.line-sidebar__item[data-active="true"] .line-sidebar__label {
+  color: #ffffff;
+}
+
+.line-sidebar__item:hover:not([data-active="true"]) .line-sidebar__label {
+  color: rgba(255, 255, 255, 0.75);
 }
 
 .line-sidebar__index {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   margin-right: 0.5rem;
   font-size: 0.85em;
-  opacity: calc(0.55 + var(--effect, 0) * 0.45);
+  opacity: 0.4;
+  transition: opacity 0.15s ease;
+}
+
+.line-sidebar__item[data-active="true"] .line-sidebar__index {
+  opacity: 0.6;
+  color: var(--accent-color);
 }
 
 .line-sidebar__icon {
-  color: color-mix(in srgb, var(--accent-color) calc(var(--effect, 0) * 100%), var(--text-color));
+  color: inherit;
+  transition: color 0.15s ease;
 }
 
+.line-sidebar__item[data-active="true"] .line-sidebar__icon {
+  color: var(--accent-color);
+}
+
+/* Static tick marks between items */
 .line-sidebar--markers .line-sidebar__item:not(:last-child)::after {
   content: '';
   position: absolute;
   top: calc(100% + var(--item-gap) / 2);
   left: 10px;
   height: 1px;
-  width: calc(var(--marker-length) * var(--tick-scale));
+  width: 20px;
   background-color: var(--marker-color);
-  opacity: 0.5;
+  opacity: 0.3;
   transform: translateY(-50%);
-}
-
-.line-sidebar--scale-tick .line-sidebar__item:not(:last-child)::after {
-  transform-origin: left center;
-  transform: translateY(-50%) scaleX(calc(0.7 + var(--effect, 0) * 0.6));
 }
