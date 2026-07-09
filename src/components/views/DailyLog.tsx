@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useWorkspace } from '../../context/WorkspaceContext';
-import { Plus, Trash2, ExternalLink, Calendar, FileText, Pencil, X, Check } from 'lucide-react';
+import { Plus, Trash2, ExternalLink, Calendar, FileText, Pencil, X, Check, ChevronRight } from 'lucide-react';
 import { useToast } from '../ui/Toast';
 import { ManageCategoriesModal } from '../ui/ManageCategoriesModal';
 import { SegmentedControl } from '../ui/SegmentedControl';
@@ -138,6 +138,12 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
 
   const [isComposing, setIsComposing] = useState(false);
   const [activeTab, setActiveTab] = useState<'Daily' | 'Weekly' | 'Monthly' | 'All Time'>('Daily');
+  const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set());
+  const toggleSection = (key: string) => setCollapsedSections(prev => {
+    const next = new Set(prev);
+    if (next.has(key)) next.delete(key); else next.add(key);
+    return next;
+  });
   const [isManageCategoriesOpen, setIsManageCategoriesOpen] = useState(false);
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState(categories[0]?.name || '');
@@ -692,9 +698,18 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
                     year: 'numeric'
                   });
 
+                  const isCollapsed = collapsedSections.has(dateKey);
                   return (
                     <section key={dateKey}>
-                      <div className="flex items-center gap-3 px-3 py-2 mb-1 rounded-md bg-white/[0.025] border border-white/[0.06]">
+                      <button
+                        onClick={() => toggleSection(dateKey)}
+                        className="w-full flex items-center gap-3 px-3 py-2 mb-1 rounded-md bg-white/[0.025] border border-white/[0.06] hover:bg-white/[0.04] transition-colors cursor-pointer"
+                      >
+                        <ChevronRight
+                          size={12}
+                          className="text-apple-tertiary shrink-0 transition-transform duration-200"
+                          style={{ transform: isCollapsed ? 'rotate(0deg)' : 'rotate(90deg)' }}
+                        />
                         <div className="flex items-baseline gap-2">
                           <span className={`text-[12px] font-semibold tracking-tight leading-none ${
                             isT ? 'text-emerald-400' : 'text-white/80'
@@ -709,10 +724,12 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
                         <span className="text-[11px] font-mono text-apple-tertiary tabular-nums">
                           {groupedLogs[dateKey].length} {groupedLogs[dateKey].length === 1 ? 'entry' : 'entries'}
                         </span>
-                      </div>
-                      <div className="space-y-0 mb-6">
-                        {groupedLogs[dateKey].map(log => renderLogCard(log))}
-                      </div>
+                      </button>
+                      {!isCollapsed && (
+                        <div className="space-y-0 mb-6">
+                          {groupedLogs[dateKey].map(log => renderLogCard(log))}
+                        </div>
+                      )}
                     </section>
                   );
                 })}
@@ -723,9 +740,18 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
               <div className="space-y-0">
                 {sortedWeekKeys.map(weekKey => {
                   const week = weeklyGrouped[weekKey];
+                  const isCollapsed = collapsedSections.has(weekKey);
                   return (
                     <section key={weekKey}>
-                      <div className="flex items-center gap-3 px-3 py-2 mb-1 rounded-md bg-white/[0.025] border border-white/[0.06]">
+                      <button
+                        onClick={() => toggleSection(weekKey)}
+                        className="w-full flex items-center gap-3 px-3 py-2 mb-1 rounded-md bg-white/[0.025] border border-white/[0.06] hover:bg-white/[0.04] transition-colors cursor-pointer"
+                      >
+                        <ChevronRight
+                          size={12}
+                          className="text-apple-tertiary shrink-0 transition-transform duration-200"
+                          style={{ transform: isCollapsed ? 'rotate(0deg)' : 'rotate(90deg)' }}
+                        />
                         <span className="text-[12px] font-semibold text-white/80 tracking-tight leading-none">
                           {week.label}
                         </span>
@@ -733,10 +759,12 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
                         <span className="text-[11px] font-mono text-apple-tertiary tabular-nums">
                           {week.items.length} {week.items.length === 1 ? 'entry' : 'entries'}
                         </span>
-                      </div>
-                      <div className="space-y-0 mb-6">
-                        {week.items.map(log => renderLogCard(log))}
-                      </div>
+                      </button>
+                      {!isCollapsed && (
+                        <div className="space-y-0 mb-6">
+                          {week.items.map(log => renderLogCard(log))}
+                        </div>
+                      )}
                     </section>
                   );
                 })}
@@ -747,9 +775,18 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
               <div className="space-y-0">
                 {sortedMonthKeys.map(monthKey => {
                   const m = monthlyGrouped[monthKey];
+                  const isCollapsed = collapsedSections.has(monthKey);
                   return (
                     <section key={monthKey}>
-                      <div className="flex items-center gap-3 px-3 py-2 mb-1 rounded-md bg-white/[0.025] border border-white/[0.06]">
+                      <button
+                        onClick={() => toggleSection(monthKey)}
+                        className="w-full flex items-center gap-3 px-3 py-2 mb-1 rounded-md bg-white/[0.025] border border-white/[0.06] hover:bg-white/[0.04] transition-colors cursor-pointer"
+                      >
+                        <ChevronRight
+                          size={12}
+                          className="text-apple-tertiary shrink-0 transition-transform duration-200"
+                          style={{ transform: isCollapsed ? 'rotate(0deg)' : 'rotate(90deg)' }}
+                        />
                         <span className="text-[12px] font-semibold text-white/80 tracking-tight leading-none">
                           {m.label}
                         </span>
@@ -757,10 +794,12 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
                         <span className="text-[11px] font-mono text-apple-tertiary tabular-nums">
                           {m.items.length} {m.items.length === 1 ? 'entry' : 'entries'}
                         </span>
-                      </div>
-                      <div className="space-y-0 mb-6">
-                        {m.items.map(log => renderLogCard(log))}
-                      </div>
+                      </button>
+                      {!isCollapsed && (
+                        <div className="space-y-0 mb-6">
+                          {m.items.map(log => renderLogCard(log))}
+                        </div>
+                      )}
                     </section>
                   );
                 })}
