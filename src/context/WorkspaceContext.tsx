@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { initialWorkspaceData } from '../data/initialState';
-import type { WorkspaceData, DailyLogEntry, WeeklyReflection, DeliverableItem, MeetingEvent, Role, CustomCategory } from '../data/initialState';
+import type { WorkspaceData, DailyLogEntry, WeeklyReflection, DeliverableItem, MeetingEvent, Role, CustomCategory, TaskItem } from '../data/initialState';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 interface WorkspaceContextType {
@@ -20,6 +20,9 @@ interface WorkspaceContextType {
   addSupervisorCommentForPerson: (weekId: string, person: 'Miral' | 'Shalini', comment: string, isReviewed: boolean) => void;
   addMeeting: (meeting: Omit<MeetingEvent, 'id'>) => void;
   exportToCSV: (section: 'logs' | 'deliverables' | 'roadmap' | 'meetings') => void;
+  addTask: (task: Omit<TaskItem, 'id' | 'identifier'>) => void;
+  updateTask: (id: string, updates: Partial<Omit<TaskItem, 'id' | 'identifier'>>) => void;
+  deleteTask: (id: string) => void;
 }
 
 const WorkspaceContext = createContext<WorkspaceContextType | undefined>(undefined);
@@ -50,6 +53,9 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         if (parsed.dailyLogs && parsed.deliverables && parsed.weeklyReflections && parsed.roadmaps && parsed.meetings) {
           if (!parsed.categories) {
             parsed.categories = initialWorkspaceData.categories;
+          }
+          if (!parsed.tasks) {
+            parsed.tasks = initialWorkspaceData.tasks;
           }
           return parsed;
         }
@@ -132,7 +138,8 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           weeklyReflections,
           deliverables,
           roadmaps: initialWorkspaceData.roadmaps,
-          meetings
+          meetings,
+          tasks: initialWorkspaceData.tasks // Fallback since tasks are new, no supabase table yet
         });
         setSyncMode('synced');
       } catch (err) {
@@ -520,6 +527,35 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     document.body.removeChild(link);
   };
 
+  const addTask = async (task: Omit<TaskItem, 'id' | 'identifier'>) => {
+    const num = data.tasks.length + 1;
+    const identifier = `TSK-${String(num).padStart(3, '0')}`;
+    const newTask: TaskItem = {
+      ...task,
+      id: `tsk-${Date.now()}`,
+      identifier
+    };
+    setData(prev => ({
+      ...prev,
+      tasks: [...prev.tasks, newTask]
+    }));
+    // Note: No Supabase sync added for tasks yet.
+  };
+
+  const updateTask = async (id: string, updates: Partial<Omit<TaskItem, 'id' | 'identifier'>>) => {
+    setData(prev => ({
+      ...prev,
+      tasks: prev.tasks.map(t => t.id === id ? { ...t, ...updates } : t)
+    }));
+  };
+
+  const deleteTask = async (id: string) => {
+    setData(prev => ({
+      ...prev,
+      tasks: prev.tasks.filter(t => t.id !== id)
+    }));
+  };
+
   return (
     <WorkspaceContext.Provider value={{
       role,
@@ -537,7 +573,10 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       addSupervisorComment,
       addSupervisorCommentForPerson,
       addMeeting,
-      exportToCSV
+      exportToCSV,
+      addTask,
+      updateTask,
+      deleteTask
     }}>
       {children}
     </WorkspaceContext.Provider>

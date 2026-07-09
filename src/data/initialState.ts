@@ -53,6 +53,20 @@ export interface MeetingEvent {
   outcome: string;
 }
 
+export type TaskStatus = 'Backlog' | 'Todo' | 'In Progress' | 'Done' | 'Canceled';
+export type TaskPriority = 'No priority' | 'Urgent' | 'High' | 'Medium' | 'Low';
+
+export interface TaskItem {
+  id: string;
+  identifier: string; // e.g. TSK-123
+  title: string;
+  status: TaskStatus;
+  priority: TaskPriority;
+  assignee: 'Miral' | 'Shalini';
+  date: string; // YYYY-MM-DD, optional
+  labels: string[];
+}
+
 export interface WorkspaceData {
   categories: CustomCategory[];
   dailyLogs: DailyLogEntry[];
@@ -60,6 +74,7 @@ export interface WorkspaceData {
   deliverables: DeliverableItem[];
   roadmaps: QuarterRoadmap[];
   meetings: MeetingEvent[];
+  tasks: TaskItem[];
 }
 
 // Generate dates relative to current date for pre-seeding
@@ -244,5 +259,67 @@ export const initialWorkspaceData: WorkspaceData = {
     { id: 'rm-s-4', quarter: 'Q4 2026/2027', theme: 'Model Training, Optimization, Deployment', owner: 'Shalini', activities: ['Fine-tuning coexistence model layers', 'Iterative evaluation metrics verification', 'Initial hosting environment provisioning', 'Beta user acceptance feedback reviews'] },
     { id: 'rm-s-5', quarter: 'Q1 2027', theme: 'UAT & Final Release Deployments', owner: 'Shalini', activities: ['Automation test configurations (regression mapping)', 'Ethical alignment audits', 'Final UAT report synthesis', 'Workspace closure & publishing activities'] }
   ],
-  meetings: generateRecurringMeetings()
+  meetings: generateRecurringMeetings(),
+  tasks: [
+    {
+      id: 'tsk-1',
+      identifier: 'TSK-001',
+      title: 'Draft initial HEC metrics schema',
+      status: 'Done',
+      priority: 'High',
+      assignee: 'Miral',
+      date: getRelativeDateStr(-5),
+      labels: ['Data', 'Research']
+    },
+    {
+      id: 'tsk-2',
+      identifier: 'TSK-002',
+      title: 'Review generative AI ethical guidelines',
+      status: 'In Progress',
+      priority: 'Urgent',
+      assignee: 'Shalini',
+      date: getRelativeDateStr(-2),
+      labels: ['Compliance']
+    },
+    {
+      id: 'tsk-3',
+      identifier: 'TSK-003',
+      title: 'Design serious game UI wireframes',
+      status: 'In Progress',
+      priority: 'High',
+      assignee: 'Miral',
+      date: getRelativeDateStr(2),
+      labels: ['Design', 'UX']
+    },
+    {
+      id: 'tsk-4',
+      identifier: 'TSK-004',
+      title: 'Assemble preliminary field datasets',
+      status: 'Todo',
+      priority: 'Medium',
+      assignee: 'Shalini',
+      date: getRelativeDateStr(5),
+      labels: ['Data']
+    },
+    {
+      id: 'tsk-5',
+      identifier: 'TSK-005',
+      title: 'Implement player scoring system logic',
+      status: 'Todo',
+      priority: 'Low',
+      assignee: 'Miral',
+      date: getRelativeDateStr(10),
+      labels: ['Development']
+    },
+    {
+      id: 'tsk-6',
+      identifier: 'TSK-006',
+      title: 'Explore Unity particle systems for foliage',
+      status: 'Backlog',
+      priority: 'No priority',
+      assignee: 'Miral',
+      date: '',
+      labels: ['Exploration']
+    }
+  ]
 };

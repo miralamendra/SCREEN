@@ -8,10 +8,11 @@ import { Deliverables } from './views/Deliverables';
 import { Roadmap } from './views/Roadmap';
 import { Meetings } from './views/Meetings';
 import { Calendar } from './views/Calendar';
+import { Tasks } from './views/Tasks';
 import {
   LayoutDashboard, FileText, CheckSquare,
   Milestone, CalendarDays, Compass, LogOut, ChevronRight, ArrowLeftRight,
-  Search, Plus, Keyboard, ChevronDown, Check
+  Search, Plus, Keyboard, ChevronDown, Check, CheckCircle
 } from 'lucide-react';
 import { CommandPalette } from './ui/CommandPalette';
 import { ShortcutsOverlay } from './ui/ShortcutsOverlay';
@@ -21,7 +22,7 @@ import Dither from './ui/Dither';
 import { LineSidebar } from './ui/LineSidebar';
 import { Avatar } from './ui/Avatar';
 
-type TabId = 'log' | 'review' | 'deliverables' | 'roadmap' | 'meetings' | 'overview' | 'calendar';
+type TabId = 'log' | 'review' | 'deliverables' | 'roadmap' | 'meetings' | 'overview' | 'calendar' | 'tasks';
 
 interface NavItem {
   id: TabId;
@@ -31,6 +32,7 @@ interface NavItem {
 
 const NAV_ITEMS_RESEARCHER: NavItem[] = [
   { id: 'log', label: 'Daily Log', icon: FileText },
+  { id: 'tasks', label: 'Tasks', icon: CheckCircle },
   { id: 'review', label: 'Weekly Review', icon: CheckSquare },
   { id: 'calendar', label: 'Calendar', icon: CalendarDays },
   { id: 'deliverables', label: 'Deliverables', icon: Milestone },
@@ -40,6 +42,7 @@ const NAV_ITEMS_RESEARCHER: NavItem[] = [
 
 const NAV_ITEMS_SUPERVISOR: NavItem[] = [
   { id: 'overview', label: 'Overview', icon: LayoutDashboard },
+  { id: 'tasks', label: 'Tasks', icon: CheckCircle },
   { id: 'review', label: 'Weekly Review', icon: CheckSquare },
   { id: 'calendar', label: 'Calendar', icon: CalendarDays },
   { id: 'deliverables', label: 'Deliverables', icon: Milestone },
@@ -106,7 +109,7 @@ export const Dashboard: React.FC = () => {
       const k = e.key.toLowerCase();
       if (pending === 'g') {
         const map: Record<string, TabId> = {
-          l: 'log', c: 'calendar', w: 'review', d: 'deliverables', r: 'roadmap', m: 'meetings', o: 'overview'
+          l: 'log', t: 'tasks', c: 'calendar', w: 'review', d: 'deliverables', r: 'roadmap', m: 'meetings', o: 'overview'
         };
         if (map[k]) { e.preventDefault(); setActiveTab(map[k]); }
         pending = null;
@@ -450,6 +453,7 @@ export const Dashboard: React.FC = () => {
         <main className="flex-1 overflow-y-auto">
           <div className="max-w-[860px] mx-auto px-5 sm:px-8 py-6 sm:py-8">
             {activeTab === 'overview' && role === 'supervisor' && <Overview />}
+            {activeTab === 'tasks' && <Tasks />}
             {activeTab === 'log' && role !== 'supervisor' && <DailyLog newEntryTrigger={newLogTrigger} />}
             {activeTab === 'calendar' && <Calendar />}
             {activeTab === 'review' && <WeeklyReview />}
