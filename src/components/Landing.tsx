@@ -107,8 +107,7 @@ export const Landing: React.FC = () => {
               </h1>
 
               <p className="mt-4 text-[14px] sm:text-[15px] text-white/70 max-w-xl leading-relaxed text-pretty">
-                Research portal for SCREEN, integrating empirical fieldwork with
-                localized wildlife technology design.
+                Research portal for SCREEN, designed for research workflow management.
               </p>
             </div>
 
