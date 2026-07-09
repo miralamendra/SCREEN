@@ -49,7 +49,7 @@ const renderFormattedDescription = (text: string) => {
     if (currentListItems.length === 0) return;
     if (currentListType === 'ul') {
       elements.push(
-        <ul key={`ul-${key}`} className="list-disc pl-5 my-2 space-y-1 text-[14.5px] text-white font-medium leading-relaxed">
+        <ul key={`ul-${key}`} className="list-disc pl-5 my-2 space-y-1 text-[15px] text-white font-medium leading-relaxed">
           {currentListItems.map((item, idx) => (
             <li key={idx}>{item}</li>
           ))}
@@ -57,7 +57,7 @@ const renderFormattedDescription = (text: string) => {
       );
     } else if (currentListType === 'ol') {
       elements.push(
-        <ol key={`ol-${key}`} className="list-decimal pl-5 my-2 space-y-1 text-[14.5px] text-white font-medium leading-relaxed">
+        <ol key={`ol-${key}`} className="list-decimal pl-5 my-2 space-y-1 text-[15px] text-white font-medium leading-relaxed">
           {currentListItems.map((item, idx) => (
             <li key={idx}>{item}</li>
           ))}
@@ -89,7 +89,7 @@ const renderFormattedDescription = (text: string) => {
       flushList(idx);
       if (trimmed.length > 0) {
         elements.push(
-          <p key={`p-${idx}`} className="text-[14.5px] text-white font-medium leading-relaxed my-1.5 break-words whitespace-pre-wrap">
+          <p key={`p-${idx}`} className="text-[15px] text-white font-medium leading-relaxed my-2 break-words whitespace-pre-wrap">
             {line}
           </p>
         );
@@ -304,7 +304,7 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
         {!isEditing ? (
           <div className="flex items-start gap-3">
             <div 
-              className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" 
+              className="w-1.5 h-2 rounded-full mt-2 shrink-0" 
               style={{ backgroundColor: categories.find(c => c.name === log.category)?.color || '#9ca3af' }} 
             />
             <div className="flex-1 min-w-0">
@@ -314,12 +314,12 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
 
               <div className="flex items-center gap-2 mt-2.5 flex-wrap">
                 {role === 'supervisor' && (
-                  <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-md border border-white/10 bg-white/[0.05] text-apple-secondary uppercase tracking-[0.06em]">
+                  <span className="inline-flex items-center gap-1 text-[12px] font-semibold px-2 py-0.5 rounded-md border border-white/10 bg-white/[0.05] text-apple-secondary uppercase tracking-[0.06em]">
                     {log.person}
                   </span>
                 )}
                 <span
-                  className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-md border uppercase tracking-[0.06em]"
+                  className="inline-flex items-center gap-1 text-[12px] font-semibold px-2 py-0.5 rounded-md border uppercase tracking-[0.06em]"
                   style={{ 
                     color: categories.find(c => c.name === log.category)?.color || '#9ca3af',
                     borderColor: categories.find(c => c.name === log.category)?.color || '#9ca3af',
@@ -333,7 +333,7 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
                     href={log.link}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-[11.5px] text-white/70 hover:text-white inline-flex items-center gap-1 transition-colors"
+                    className="text-[12px] text-white/70 hover:text-white inline-flex items-center gap-1 transition-colors"
                   >
                     <ExternalLink size={10} />
                     <span>Open link</span>
@@ -343,7 +343,7 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
 
               {log.takeaway && (
                 <div className="mt-3 pl-3 border-l-2 border-emerald-400/30">
-                  <p className="text-[12.5px] text-white/80 leading-relaxed italic">
+                  <p className="text-[12px] text-white/80 leading-relaxed italic">
                     {log.takeaway}
                   </p>
                 </div>
@@ -371,15 +371,15 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
         ) : (
           <div className="space-y-3 fade-in">
             <div className="flex items-center gap-2 pb-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <p className="text-[10.5px] font-medium tracking-[0.18em] uppercase text-white/85">
+              <span className="w-1.5 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <p className="text-[12px] font-medium tracking-[0.18em] uppercase text-white/85">
                 Editing entry
               </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-[10.5px] font-semibold tracking-[0.08em] uppercase text-white/80 mb-1.5">
+                <label className="block text-[12px] font-semibold tracking-[0.08em] uppercase text-white/80 mb-2">
                   Date
                 </label>
                 <input
@@ -387,18 +387,18 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
                   required
                   value={editDate}
                   onChange={e => setEditDate(e.target.value)}
-                  className="w-full px-3 py-2 bg-white/[0.04] border border-white/[0.08] rounded-md text-[13.5px] text-white/95 focus:border-white/[0.2] focus:bg-white/[0.06] transition-colors outline-none"
+                  className="w-full px-3 py-2 bg-white/[0.04] border border-white/[0.08] rounded-md text-[15px] text-white/95 focus:border-white/[0.2] focus:bg-white/[0.06] transition-colors outline-none"
                 />
               </div>
               <div>
-                <label className="block text-[10.5px] font-semibold tracking-[0.08em] uppercase text-white/80 mb-1.5">
+                <label className="block text-[12px] font-semibold tracking-[0.08em] uppercase text-white/80 mb-2">
                   Category
                 </label>
                 <select
                   required
                   value={editCategory}
                   onChange={e => setEditCategory(e.target.value)}
-                  className="w-full px-3 py-2 bg-white/[0.04] border border-white/[0.08] rounded-md text-[13.5px] text-white/95 focus:border-white/[0.2] focus:bg-white/[0.06] transition-colors outline-none cursor-pointer"
+                  className="w-full px-3 py-2 bg-white/[0.04] border border-white/[0.08] rounded-md text-[15px] text-white/95 focus:border-white/[0.2] focus:bg-white/[0.06] transition-colors outline-none cursor-pointer"
                 >
                   {categories.map(c => (
                     <option key={c.id} value={c.name} className="bg-apple-surface text-white">
@@ -410,7 +410,7 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
             </div>
 
             <div>
-              <label className="block text-[10.5px] font-semibold tracking-[0.08em] uppercase text-white/80 mb-1.5">
+              <label className="block text-[12px] font-semibold tracking-[0.08em] uppercase text-white/80 mb-2">
                 Description
               </label>
               <textarea
@@ -419,31 +419,31 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
                 value={editDescription}
                 onChange={e => setEditDescription(e.target.value)}
                 style={{ minHeight: '80px', height: 'auto' }}
-                className="w-full px-4 py-3 bg-apple-base border border-apple-border rounded-lg text-[14px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] transition-colors outline-none resize-none leading-relaxed"
+                className="w-full px-4 py-3 bg-apple-base border border-apple-border rounded-lg text-[15px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] transition-colors outline-none resize-none leading-relaxed"
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-[10.5px] font-semibold tracking-[0.08em] uppercase text-white/80 mb-1.5">
+                <label className="block text-[12px] font-semibold tracking-[0.08em] uppercase text-white/80 mb-2">
                   Reference Link <span className="text-apple-tertiary font-normal normal-case tracking-normal">· optional</span>
                 </label>
                 <input
                   type="url"
                   value={editLink}
                   onChange={e => setEditLink(e.target.value)}
-                  className="w-full px-3 py-2 bg-white/[0.04] border border-white/[0.08] rounded-md text-[13.5px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] focus:bg-white/[0.06] transition-colors outline-none"
+                  className="w-full px-3 py-2 bg-white/[0.04] border border-white/[0.08] rounded-md text-[15px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] focus:bg-white/[0.06] transition-colors outline-none"
                 />
               </div>
               <div>
-                <label className="block text-[10.5px] font-semibold tracking-[0.08em] uppercase text-white/80 mb-1.5">
+                <label className="block text-[12px] font-semibold tracking-[0.08em] uppercase text-white/80 mb-2">
                   Takeaway <span className="text-apple-tertiary font-normal normal-case tracking-normal">· optional</span>
                 </label>
                 <input
                   type="text"
                   value={editTakeaway}
                   onChange={e => setEditTakeaway(e.target.value)}
-                  className="w-full px-3 py-2 bg-white/[0.04] border border-white/[0.08] rounded-md text-[13.5px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] focus:bg-white/[0.06] transition-colors outline-none"
+                  className="w-full px-3 py-2 bg-white/[0.04] border border-white/[0.08] rounded-md text-[15px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] focus:bg-white/[0.06] transition-colors outline-none"
                 />
               </div>
             </div>
@@ -452,7 +452,7 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
               <button
                 type="button"
                 onClick={cancelEdit}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[12px] text-apple-secondary hover:text-white/85 rounded-md hover:bg-white/[0.04] transition-colors"
+                className="inline-flex items-center gap-2 px-3 py-2 text-[12px] text-apple-secondary hover:text-white/85 rounded-md hover:bg-white/[0.04] transition-colors"
               >
                 <X size={12} />
                 <span>Cancel</span>
@@ -461,7 +461,7 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
                 type="button"
                 onClick={() => saveEdit(log.id)}
                 disabled={!editDescription.trim()}
-                className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-white text-apple-base rounded-md text-[12.5px] font-semibold hover:bg-white/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-white text-apple-base rounded-md text-[12px] font-semibold hover:bg-white/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Check size={12} />
                 <span>Save changes</span>
@@ -477,31 +477,31 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
     <div className="fade-in space-y-8">
       <div className="flex items-end justify-between gap-4 flex-wrap">
         <div>
-          <p className="text-[10.5px] font-medium tracking-[0.18em] uppercase text-apple-secondary mb-2">
+          <p className="text-[12px] font-medium tracking-[0.18em] uppercase text-apple-secondary mb-2">
             Journal
           </p>
-          <h1 className="text-[30px] sm:text-[34px] font-semibold tracking-[-0.025em] text-white leading-none">
+          <h1 className="text-[36px] sm:text-[36px] font-semibold tracking-[-0.025em] text-white leading-none">
             Daily Log
           </h1>
-          <p className="text-[13.5px] text-apple-gray mt-2.5 max-w-md">
+          <p className="text-[15px] text-apple-gray mt-2.5 max-w-md">
             Record what you worked on. Keep it small, keep it daily.
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0 flex-wrap">
           {/* Today stats badge */}
-          <div className="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-white/[0.04] border border-white/[0.06] text-[11.5px] text-apple-secondary font-medium">
+          <div className="inline-flex items-center gap-2 px-3 py-2 rounded-md bg-white/[0.04] border border-white/[0.06] text-[12px] text-apple-secondary font-medium">
             <span>Today</span>
-            <span className="text-white font-mono font-semibold tabular-nums bg-white/[0.06] px-1.5 py-0.2 rounded border border-white/5">{todayCount}</span>
+            <span className="text-white font-mono font-semibold tabular-nums bg-white/[0.06] px-2 py-0.2 rounded border border-white/5">{todayCount}</span>
           </div>
 
           {/* All time stats badge */}
-          <div className="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-white/[0.04] border border-white/[0.06] text-[11.5px] text-apple-secondary font-medium">
+          <div className="inline-flex items-center gap-2 px-3 py-2 rounded-md bg-white/[0.04] border border-white/[0.06] text-[12px] text-apple-secondary font-medium">
             <span>All-time</span>
-            <span className="text-white font-mono font-semibold tabular-nums bg-white/[0.06] px-1.5 py-0.2 rounded border border-white/5">{myLogs.length}</span>
+            <span className="text-white font-mono font-semibold tabular-nums bg-white/[0.06] px-2 py-0.2 rounded border border-white/5">{myLogs.length}</span>
           </div>
 
           {/* Date badge */}
-          <div className="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+          <div className="inline-flex items-center gap-2 px-3 py-2 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
             <Calendar size={12} />
             <span className="text-[12px] font-mono tabular-nums font-semibold">
               {new Date().toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
@@ -514,13 +514,13 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
         <button
           ref={promptRef}
           onClick={() => setIsComposing(true)}
-          className="w-full flex items-center gap-2 px-4 py-3 rounded-lg border border-apple-border bg-apple-surface hover:bg-apple-elevated transition-colors text-[13.5px] text-apple-gray hover:text-white/85 group"
+          className="w-full flex items-center gap-2 px-4 py-3 rounded-lg border border-apple-border bg-apple-surface hover:bg-apple-elevated transition-colors text-[15px] text-apple-gray hover:text-white/85 group"
         >
           <span className="inline-flex items-center justify-center w-6 h-6 rounded-md bg-apple-elevated border border-apple-border transition-colors">
             <Plus size={13} className="group-hover:text-white transition-colors" />
           </span>
           <span>Add a log entry - what did you work on today?</span>
-          <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono bg-white/[0.04] border border-white/[0.06] ml-auto">
+          <kbd className="hidden sm:inline-flex items-center px-2 py-0.5 rounded text-[12px] font-mono bg-white/[0.04] border border-white/[0.06] ml-auto">
             C
           </kbd>
         </button>
@@ -530,15 +530,15 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
           className="rounded-lg border border-apple-border bg-apple-surface p-4 sm:p-5 space-y-4 fade-in"
         >
           <div className="flex items-center gap-2 pb-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-            <p className="text-[10.5px] font-medium tracking-[0.18em] uppercase text-white/85">
+            <span className="w-1.5 h-2 rounded-full bg-white animate-pulse" />
+            <p className="text-[12px] font-medium tracking-[0.18em] uppercase text-white/85">
               New entry
             </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-[10.5px] font-semibold tracking-[0.08em] uppercase text-white/80 mb-1.5">
+              <label className="block text-[12px] font-semibold tracking-[0.08em] uppercase text-white/80 mb-2">
                 Date
               </label>
               <input
@@ -546,18 +546,18 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
                 required
                 value={date}
                 onChange={e => setDate(e.target.value)}
-                className="w-full px-3 py-2 bg-white/[0.04] border border-white/[0.08] rounded-md text-[13.5px] text-white/95 focus:border-white/[0.2] focus:bg-white/[0.06] transition-colors outline-none"
+                className="w-full px-3 py-2 bg-white/[0.04] border border-white/[0.08] rounded-md text-[15px] text-white/95 focus:border-white/[0.2] focus:bg-white/[0.06] transition-colors outline-none"
               />
             </div>
             <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label className="block text-[10.5px] font-semibold tracking-[0.08em] uppercase text-white/80">
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-[12px] font-semibold tracking-[0.08em] uppercase text-white/80">
                   Category
                 </label>
                 <button
                   type="button"
                   onClick={() => setIsManageCategoriesOpen(true)}
-                  className="text-[10.5px] font-medium text-emerald-400 hover:text-emerald-300 transition-colors"
+                  className="text-[12px] font-medium text-emerald-400 hover:text-emerald-300 transition-colors"
                 >
                   Manage categories
                 </button>
@@ -566,7 +566,7 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
                 required
                 value={category}
                 onChange={e => setCategory(e.target.value)}
-                className="w-full px-3 py-2 bg-white/[0.04] border border-white/[0.08] rounded-md text-[13.5px] text-white/95 focus:border-white/[0.2] focus:bg-white/[0.06] transition-colors outline-none cursor-pointer"
+                className="w-full px-3 py-2 bg-white/[0.04] border border-white/[0.08] rounded-md text-[15px] text-white/95 focus:border-white/[0.2] focus:bg-white/[0.06] transition-colors outline-none cursor-pointer"
               >
                 {categories.map(c => (
                   <option key={c.id} value={c.name} className="bg-apple-surface text-white">
@@ -577,9 +577,9 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
             </div>
           </div>
 
-          <div className="space-y-3.5">
+          <div className="space-y-4">
             <div>
-              <label className="block text-[10.5px] font-semibold tracking-[0.08em] uppercase text-white/80 mb-1.5">
+              <label className="block text-[12px] font-semibold tracking-[0.08em] uppercase text-white/80 mb-2">
                 Description
               </label>
               <textarea
@@ -590,13 +590,13 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
                 value={description}
                 onChange={e => setDescription(e.target.value)}
                 style={{ minHeight: '80px', height: 'auto' }}
-                className="w-full px-4 py-3 bg-apple-base border border-apple-border rounded-lg text-[14px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] transition-colors outline-none resize-none leading-relaxed"
+                className="w-full px-4 py-3 bg-apple-base border border-apple-border rounded-lg text-[15px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] transition-colors outline-none resize-none leading-relaxed"
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-[10.5px] font-semibold tracking-[0.08em] uppercase text-white/80 mb-1.5">
+                <label className="block text-[12px] font-semibold tracking-[0.08em] uppercase text-white/80 mb-2">
                   Reference Link <span className="text-apple-tertiary font-normal normal-case tracking-normal">· optional</span>
                 </label>
                 <input
@@ -604,11 +604,11 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
                   placeholder="https://example.com/artifact-or-ref"
                   value={link}
                   onChange={e => setLink(e.target.value)}
-                  className="w-full px-3 py-2 bg-white/[0.04] border border-white/[0.08] rounded-md text-[13.5px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] focus:bg-white/[0.06] transition-colors outline-none"
+                  className="w-full px-3 py-2 bg-white/[0.04] border border-white/[0.08] rounded-md text-[15px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] focus:bg-white/[0.06] transition-colors outline-none"
                 />
               </div>
               <div>
-                <label className="block text-[10.5px] font-semibold tracking-[0.08em] uppercase text-white/80 mb-1.5">
+                <label className="block text-[12px] font-semibold tracking-[0.08em] uppercase text-white/80 mb-2">
                   Takeaway <span className="text-apple-tertiary font-normal normal-case tracking-normal">· optional</span>
                 </label>
                 <input
@@ -616,7 +616,7 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
                   placeholder="One-line insight from this work"
                   value={takeaway}
                   onChange={e => setTakeaway(e.target.value)}
-                  className="w-full px-3 py-2 bg-white/[0.04] border border-white/[0.08] rounded-md text-[13.5px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] focus:bg-white/[0.06] transition-colors outline-none"
+                  className="w-full px-3 py-2 bg-white/[0.04] border border-white/[0.08] rounded-md text-[15px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] focus:bg-white/[0.06] transition-colors outline-none"
                 />
               </div>
             </div>
@@ -625,14 +625,14 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
               <button
                 type="button"
                 onClick={reset}
-                className="px-3 py-1.5 text-[12px] text-apple-secondary hover:text-white/85 rounded-md hover:bg-white/[0.04] transition-colors"
+                className="px-3 py-2 text-[12px] text-apple-secondary hover:text-white/85 rounded-md hover:bg-white/[0.04] transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={!description.trim()}
-                className="px-4 py-1.5 bg-white text-apple-base rounded-md text-[12.5px] font-semibold hover:bg-white/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 bg-white text-apple-base rounded-md text-[12px] font-semibold hover:bg-white/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Save entry
               </button>
@@ -646,15 +646,15 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
           <div className="w-12 h-12 rounded-full bg-white/[0.04] border border-white/[0.06] flex items-center justify-center mb-3">
             <FileText size={18} className="text-apple-gray" />
           </div>
-          <p className="text-[14px] text-white/90 font-medium">No logs recorded yet</p>
-          <p className="text-[12.5px] text-apple-secondary mt-1 max-w-xs">
+          <p className="text-[15px] text-white/90 font-medium">No logs recorded yet</p>
+          <p className="text-[12px] text-apple-secondary mt-1 max-w-xs">
             A daily log is your research journal. Start with one line - what did you work on today?
           </p>
         </div>
       ) : (
         <div className="space-y-6 mt-4">
           <div className="flex items-center justify-between border-b border-white/[0.06] pb-3.5 flex-wrap gap-2">
-            <h2 className="text-[16px] font-semibold text-white tracking-tight flex items-center gap-2">
+            <h2 className="text-[18px] font-semibold text-white tracking-tight flex items-center gap-2">
               <FileText size={16} className="text-apple-secondary" />
               <span>Research Log</span>
             </h2>
@@ -691,12 +691,12 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
                           <span className="text-[15px] font-semibold text-white tracking-tight leading-none">
                             {dayLabel}
                           </span>
-                          <span className="text-[11px] font-mono text-apple-secondary tabular-nums mt-1.5">
+                          <span className="text-[12px] font-mono text-apple-secondary tabular-nums mt-1.5">
                             {dateLabel}
                           </span>
                         </div>
                         <div className="flex-1" />
-                        <span className="text-[10.5px] font-mono text-apple-tertiary tabular-nums px-2 py-0.5 rounded bg-white/[0.03] border border-white/[0.06]">
+                        <span className="text-[12px] font-mono text-apple-tertiary tabular-nums px-2 py-0.5 rounded bg-white/[0.03] border border-white/[0.06]">
                           {groupedLogs[dateKey].length} {groupedLogs[dateKey].length === 1 ? 'entry' : 'entries'}
                         </span>
                       </div>
@@ -720,7 +720,7 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
                           {week.label}
                         </span>
                         <div className="flex-1" />
-                        <span className="text-[10.5px] font-mono text-apple-tertiary tabular-nums px-2 py-0.5 rounded bg-white/[0.03] border border-white/[0.06]">
+                        <span className="text-[12px] font-mono text-apple-tertiary tabular-nums px-2 py-0.5 rounded bg-white/[0.03] border border-white/[0.06]">
                           {week.items.length} {week.items.length === 1 ? 'entry' : 'entries'}
                         </span>
                       </div>
@@ -744,7 +744,7 @@ export const DailyLog: React.FC<DailyLogProps> = ({ newEntryTrigger }) => {
                           {m.label}
                         </span>
                         <div className="flex-1" />
-                        <span className="text-[10.5px] font-mono text-apple-tertiary tabular-nums px-2 py-0.5 rounded bg-white/[0.03] border border-white/[0.06]">
+                        <span className="text-[12px] font-mono text-apple-tertiary tabular-nums px-2 py-0.5 rounded bg-white/[0.03] border border-white/[0.06]">
                           {m.items.length} {m.items.length === 1 ? 'entry' : 'entries'}
                         </span>
                       </div>

@@ -14,7 +14,7 @@ const renderFormattedDescription = (text: string) => {
     if (currentListItems.length === 0) return;
     if (currentListType === 'ul') {
       elements.push(
-        <ul key={`ul-${key}`} className="list-disc pl-5 my-1.5 space-y-1 text-[13.5px] text-white/90 leading-relaxed">
+        <ul key={`ul-${key}`} className="list-disc pl-5 my-2 space-y-1 text-[15px] text-white/90 leading-relaxed">
           {currentListItems.map((item, idx) => (
             <li key={idx}>{item}</li>
           ))}
@@ -22,7 +22,7 @@ const renderFormattedDescription = (text: string) => {
       );
     } else if (currentListType === 'ol') {
       elements.push(
-        <ol key={`ol-${key}`} className="list-decimal pl-5 my-1.5 space-y-1 text-[13.5px] text-white/90 leading-relaxed">
+        <ol key={`ol-${key}`} className="list-decimal pl-5 my-2 space-y-1 text-[15px] text-white/90 leading-relaxed">
           {currentListItems.map((item, idx) => (
             <li key={idx}>{item}</li>
           ))}
@@ -54,12 +54,12 @@ const renderFormattedDescription = (text: string) => {
       flushList(idx);
       if (trimmed.length > 0) {
         elements.push(
-          <p key={`p-${idx}`} className="text-[13.5px] text-white/90 leading-relaxed my-1 break-words whitespace-pre-wrap">
+          <p key={`p-${idx}`} className="text-[15px] text-white/90 leading-relaxed my-1 break-words whitespace-pre-wrap">
             {line}
           </p>
         );
       } else {
-        elements.push(<div key={`br-${idx}`} className="h-1.5" />);
+        elements.push(<div key={`br-${idx}`} className="h-2" />);
       }
     }
   });
@@ -300,14 +300,14 @@ export const WeeklyReview: React.FC = () => {
       {/* Header */}
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div className="min-w-0">
-          <p className="text-[10.5px] font-semibold tracking-[0.18em] uppercase text-apple-secondary mb-2 inline-flex items-center gap-1.5">
+          <p className="text-[12px] font-semibold tracking-[0.18em] uppercase text-apple-secondary mb-2 inline-flex items-center gap-2">
             <Calendar size={10} />
             Weekly review
           </p>
-          <h1 className="text-[30px] sm:text-[34px] font-semibold tracking-[-0.025em] text-white leading-none">
+          <h1 className="text-[36px] sm:text-[36px] font-semibold tracking-[-0.025em] text-white leading-none">
             {isSupervisor ? 'Weekly Reviews' : 'Weekly Review'}
           </h1>
-          <p className="text-[13.5px] text-apple-gray mt-2.5 font-mono tabular-nums">
+          <p className="text-[15px] text-apple-gray mt-2.5 font-mono tabular-nums">
             Week {isoWeekNumber} of {weekStart.getFullYear()} · {weekContextLabel}
           </p>
         </div>
@@ -325,7 +325,7 @@ export const WeeklyReview: React.FC = () => {
             <button
               onClick={() => setWeekOffset(0)}
               disabled={weekOffset === 0}
-              className={`px-2.5 py-1 text-[11.5px] font-medium border-x border-white/[0.06] transition-colors tabular-nums ${
+              className={`px-3 py-1 text-[12px] font-medium border-x border-white/[0.06] transition-colors tabular-nums ${
                 weekOffset === 0
                   ? 'text-white/95 bg-white/[0.04] cursor-default'
                   : 'text-apple-secondary hover:text-white/85 hover:bg-white/[0.04]'
@@ -344,19 +344,19 @@ export const WeeklyReview: React.FC = () => {
             </button>
           </div>
           {savedAgo && (
-            <div className="hidden sm:inline-flex items-center gap-1.5 text-[11.5px] text-apple-tertiary">
+            <div className="hidden sm:inline-flex items-center gap-2 text-[12px] text-apple-tertiary">
               <Clock size={11} />
               <span>Saved {savedAgo}</span>
             </div>
           )}
           {showReviewedBadge ? (
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-400/[0.1] text-emerald-400/90 text-[12px] border border-emerald-400/15">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-400/[0.1] text-emerald-400/90 text-[12px] border border-emerald-400/15">
               <CheckCircle2 size={12} />
               <span>Reviewed</span>
             </div>
           ) : (
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-400/[0.1] text-amber-400/90 text-[12px] border border-amber-400/15">
-              <div className="w-1.5 h-1.5 rounded-full bg-amber-400/90" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/[0.1] text-amber-400/90 text-[12px] border border-amber-400/15">
+              <div className="w-1.5 h-2 rounded-full bg-amber-400/90" />
               <span>Pending review</span>
             </div>
           )}
@@ -368,25 +368,25 @@ export const WeeklyReview: React.FC = () => {
         <div className="flex items-center gap-5 sm:gap-6 flex-wrap">
           {/* Start Date */}
           <div className="flex flex-col">
-            <span className="text-[9.5px] font-semibold tracking-[0.18em] uppercase text-apple-secondary leading-none mb-2">
+            <span className="text-[12px] font-semibold tracking-[0.18em] uppercase text-apple-secondary leading-none mb-2">
               Start
             </span>
-            <span className="text-[14.5px] sm:text-[15.5px] font-semibold text-white tracking-tight">
+            <span className="text-[15px] sm:text-[17px] font-semibold text-white tracking-tight">
               {fullRange.startStr}
             </span>
           </div>
           
           {/* Separator - aligned with values */}
-          <div className="flex flex-col justify-end h-8 pb-0.5 text-apple-secondary/60 text-[13.5px]">
+          <div className="flex flex-col justify-end h-8 pb-0.5 text-apple-secondary/60 text-[15px]">
             <span>-</span>
           </div>
 
           {/* End Date */}
           <div className="flex flex-col">
-            <span className="text-[9.5px] font-semibold tracking-[0.18em] uppercase text-apple-secondary leading-none mb-2">
+            <span className="text-[12px] font-semibold tracking-[0.18em] uppercase text-apple-secondary leading-none mb-2">
               End
             </span>
-            <span className="text-[14.5px] sm:text-[15.5px] font-semibold text-white tracking-tight">
+            <span className="text-[15px] sm:text-[17px] font-semibold text-white tracking-tight">
               {fullRange.endStr}
             </span>
           </div>
@@ -396,24 +396,24 @@ export const WeeklyReview: React.FC = () => {
 
           {/* Year */}
           <div className="flex flex-col">
-            <span className="text-[9.5px] font-semibold tracking-[0.18em] uppercase text-apple-secondary leading-none mb-2">
+            <span className="text-[12px] font-semibold tracking-[0.18em] uppercase text-apple-secondary leading-none mb-2">
               Year
             </span>
-            <span className="text-[14.5px] sm:text-[15.5px] font-semibold text-white tracking-tight tabular-nums">
+            <span className="text-[15px] sm:text-[17px] font-semibold text-white tracking-tight tabular-nums">
               {fullRange.year}
             </span>
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5 text-[10.5px] font-mono text-apple-secondary uppercase tracking-[0.12em] bg-white/[0.03] px-2.5 py-1 rounded-md border border-white/[0.05] shrink-0">
+        <div className="flex items-center gap-2 text-[12px] font-mono text-apple-secondary uppercase tracking-[0.12em] bg-white/[0.03] px-3 py-1 rounded-md border border-white/[0.05] shrink-0">
           7 days · {weekStart.toLocaleDateString(undefined, { month: 'short' })}
         </div>
       </div>
 
       {/* Future-week notice */}
       {isFutureWeek && (
-        <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-3 text-[12.5px] text-apple-tertiary flex items-center gap-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-white/40" />
+        <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-3 text-[12px] text-apple-tertiary flex items-center gap-2">
+          <span className="w-1.5 h-2 rounded-full bg-white/40" />
           <span>This week hasn't started yet. You can pre-fill reflections, but they'll only become meaningful once the week begins.</span>
         </div>
       )}
@@ -426,31 +426,31 @@ export const WeeklyReview: React.FC = () => {
           style={{ gridTemplateColumns: '1fr 1fr' }}
         >
           {/* Row 0: Column headers */}
-          <div className="rounded-t-2xl border-x border-t border-white/[0.06] bg-white/[0.02] px-4 sm:px-5 py-3.5 flex items-center gap-3">
+          <div className="rounded-t-2xl border-x border-t border-white/[0.06] bg-white/[0.02] px-4 sm:px-5 py-3 flex items-center gap-3">
             <Avatar name="Shalini" size="sm" />
             <div className="min-w-0">
-              <p className="text-[14px] font-semibold text-white tracking-tight leading-none">Shalini</p>
-              <p className="text-[10.5px] text-apple-tertiary mt-1">Study 1: GenAI</p>
+              <p className="text-[15px] font-semibold text-white tracking-tight leading-none">Shalini</p>
+              <p className="text-[12px] text-apple-tertiary mt-1">Study 1: GenAI</p>
             </div>
             <div className="flex-1" />
-            <span className="text-[10.5px] font-mono text-apple-tertiary tabular-nums">
+            <span className="text-[12px] font-mono text-apple-tertiary tabular-nums">
               {shaliniRollup.total} {shaliniRollup.total === 1 ? 'entry' : 'entries'}
             </span>
           </div>
-          <div className="rounded-t-2xl border-x border-t border-white/[0.06] bg-white/[0.02] px-4 sm:px-5 py-3.5 flex items-center gap-3">
+          <div className="rounded-t-2xl border-x border-t border-white/[0.06] bg-white/[0.02] px-4 sm:px-5 py-3 flex items-center gap-3">
             <Avatar name="Miral" size="sm" />
             <div className="min-w-0">
-              <p className="text-[14px] font-semibold text-white tracking-tight leading-none">Miral</p>
-              <p className="text-[10.5px] text-apple-tertiary mt-1">Study 2: Gamification</p>
+              <p className="text-[15px] font-semibold text-white tracking-tight leading-none">Miral</p>
+              <p className="text-[12px] text-apple-tertiary mt-1">Study 2: Gamification</p>
             </div>
             <div className="flex-1" />
-            <span className="text-[10.5px] font-mono text-apple-tertiary tabular-nums">
+            <span className="text-[12px] font-mono text-apple-tertiary tabular-nums">
               {miralRollup.total} {miralRollup.total === 1 ? 'entry' : 'entries'}
             </span>
           </div>
 
           {/* Row 1: Activity rollup */}
-          <div className="border-x border-t border-white/[0.06] bg-white/[0.02] px-4 sm:px-5 py-3 space-y-1.5 border-b border-white/[0.04]">
+          <div className="border-x border-t border-white/[0.06] bg-white/[0.02] px-4 sm:px-5 py-3 space-y-2 border-b border-white/[0.04]">
             {shaliniRollup.total > 0 ? Object.entries(shaliniRollup.counts).sort(([, a], [, b]) => b - a).map(([cat, count]) => {
               const pct = shaliniRollup.total > 0 ? (count / shaliniRollup.total) * 100 : 0;
               return (
@@ -459,12 +459,12 @@ export const WeeklyReview: React.FC = () => {
                   <div className="w-24 h-1 bg-white/[0.04] rounded-full overflow-hidden shrink-0">
                     <div className="h-full bg-emerald-400/60 rounded-full" style={{ width: `${pct}%` }} />
                   </div>
-                  <span className="text-[11.5px] text-white font-mono tabular-nums w-5 text-right shrink-0">{count}</span>
+                  <span className="text-[12px] text-white font-mono tabular-nums w-5 text-right shrink-0">{count}</span>
                 </div>
               );
             }) : <p className="text-[12px] text-apple-tertiary italic">No log entries this week</p>}
           </div>
-          <div className="border-x border-t border-white/[0.06] bg-white/[0.02] px-4 sm:px-5 py-3 space-y-1.5 border-b border-white/[0.04]">
+          <div className="border-x border-t border-white/[0.06] bg-white/[0.02] px-4 sm:px-5 py-3 space-y-2 border-b border-white/[0.04]">
             {miralRollup.total > 0 ? Object.entries(miralRollup.counts).sort(([, a], [, b]) => b - a).map(([cat, count]) => {
               const pct = miralRollup.total > 0 ? (count / miralRollup.total) * 100 : 0;
               return (
@@ -473,7 +473,7 @@ export const WeeklyReview: React.FC = () => {
                   <div className="w-24 h-1 bg-white/[0.04] rounded-full overflow-hidden shrink-0">
                     <div className="h-full bg-emerald-400/60 rounded-full" style={{ width: `${pct}%` }} />
                   </div>
-                  <span className="text-[11.5px] text-white font-mono tabular-nums w-5 text-right shrink-0">{count}</span>
+                  <span className="text-[12px] text-white font-mono tabular-nums w-5 text-right shrink-0">{count}</span>
                 </div>
               );
             }) : <p className="text-[12px] text-apple-tertiary italic">No log entries this week</p>}
@@ -481,42 +481,42 @@ export const WeeklyReview: React.FC = () => {
 
           {/* Row 2: What got done */}
           <div className="border-x border-t border-white/[0.04] bg-white/[0.02] px-4 sm:px-5 pt-4 pb-2">
-            <label className="block text-[11px] text-white/85 mb-1.5 font-semibold tracking-[0.02em] uppercase">What got done</label>
-            <div className="w-full px-3.5 py-2.5 bg-white/[0.02] border border-white/[0.06] rounded-lg text-[13.5px] text-white/90 leading-relaxed min-h-[80px] space-y-1">
+            <label className="block text-[12px] text-white/85 mb-2 font-semibold tracking-[0.02em] uppercase">What got done</label>
+            <div className="w-full px-4 py-2 bg-white/[0.02] border border-white/[0.06] rounded-lg text-[15px] text-white/90 leading-relaxed min-h-[80px] space-y-1">
               {renderFormattedDescription(myReflection.shaliniReflection.done || 'Nothing entered')}
             </div>
           </div>
           <div className="border-x border-t border-white/[0.04] bg-white/[0.02] px-4 sm:px-5 pt-4 pb-2">
-            <label className="block text-[11px] text-white/85 mb-1.5 font-semibold tracking-[0.02em] uppercase">What got done</label>
-            <div className="w-full px-3.5 py-2.5 bg-white/[0.02] border border-white/[0.06] rounded-lg text-[13.5px] text-white/90 leading-relaxed min-h-[80px] space-y-1">
+            <label className="block text-[12px] text-white/85 mb-2 font-semibold tracking-[0.02em] uppercase">What got done</label>
+            <div className="w-full px-4 py-2 bg-white/[0.02] border border-white/[0.06] rounded-lg text-[15px] text-white/90 leading-relaxed min-h-[80px] space-y-1">
               {renderFormattedDescription(myReflection.miralReflection.done || 'Nothing entered')}
             </div>
           </div>
 
           {/* Row 3: Blockers */}
           <div className="border-x border-t border-white/[0.04] bg-white/[0.02] px-4 sm:px-5 pt-4 pb-2">
-            <label className="block text-[11px] text-white/85 mb-1.5 font-semibold tracking-[0.02em] uppercase">Blockers</label>
-            <div className="w-full px-3.5 py-2.5 bg-white/[0.02] border border-white/[0.06] rounded-lg text-[13.5px] text-white/90 leading-relaxed min-h-[80px] space-y-1">
+            <label className="block text-[12px] text-white/85 mb-2 font-semibold tracking-[0.02em] uppercase">Blockers</label>
+            <div className="w-full px-4 py-2 bg-white/[0.02] border border-white/[0.06] rounded-lg text-[15px] text-white/90 leading-relaxed min-h-[80px] space-y-1">
               {renderFormattedDescription(myReflection.shaliniReflection.blockers || 'None')}
             </div>
           </div>
           <div className="border-x border-t border-white/[0.04] bg-white/[0.02] px-4 sm:px-5 pt-4 pb-2">
-            <label className="block text-[11px] text-white/85 mb-1.5 font-semibold tracking-[0.02em] uppercase">Blockers</label>
-            <div className="w-full px-3.5 py-2.5 bg-white/[0.02] border border-white/[0.06] rounded-lg text-[13.5px] text-white/90 leading-relaxed min-h-[80px] space-y-1">
+            <label className="block text-[12px] text-white/85 mb-2 font-semibold tracking-[0.02em] uppercase">Blockers</label>
+            <div className="w-full px-4 py-2 bg-white/[0.02] border border-white/[0.06] rounded-lg text-[15px] text-white/90 leading-relaxed min-h-[80px] space-y-1">
               {renderFormattedDescription(myReflection.miralReflection.blockers || 'None')}
             </div>
           </div>
 
           {/* Row 4: Next week focus */}
           <div className="border-x border-t border-white/[0.04] bg-white/[0.02] px-4 sm:px-5 pt-4 pb-4">
-            <label className="block text-[11px] text-white/85 mb-1.5 font-semibold tracking-[0.02em] uppercase">Next week focus</label>
-            <div className="w-full px-3.5 py-2.5 bg-white/[0.02] border border-white/[0.06] rounded-lg text-[13.5px] text-white/90 leading-relaxed min-h-[80px] space-y-1">
+            <label className="block text-[12px] text-white/85 mb-2 font-semibold tracking-[0.02em] uppercase">Next week focus</label>
+            <div className="w-full px-4 py-2 bg-white/[0.02] border border-white/[0.06] rounded-lg text-[15px] text-white/90 leading-relaxed min-h-[80px] space-y-1">
               {renderFormattedDescription(myReflection.shaliniReflection.next || 'Nothing entered')}
             </div>
           </div>
           <div className="border-x border-t border-white/[0.04] bg-white/[0.02] px-4 sm:px-5 pt-4 pb-4">
-            <label className="block text-[11px] text-white/85 mb-1.5 font-semibold tracking-[0.02em] uppercase">Next week focus</label>
-            <div className="w-full px-3.5 py-2.5 bg-white/[0.02] border border-white/[0.06] rounded-lg text-[13.5px] text-white/90 leading-relaxed min-h-[80px] space-y-1">
+            <label className="block text-[12px] text-white/85 mb-2 font-semibold tracking-[0.02em] uppercase">Next week focus</label>
+            <div className="w-full px-4 py-2 bg-white/[0.02] border border-white/[0.06] rounded-lg text-[15px] text-white/90 leading-relaxed min-h-[80px] space-y-1">
               {renderFormattedDescription(myReflection.miralReflection.next || 'Nothing entered')}
             </div>
           </div>
@@ -525,19 +525,19 @@ export const WeeklyReview: React.FC = () => {
           <div className="rounded-b-2xl border-x border-b border-white/[0.06] bg-white/[0.02] p-4 sm:p-5">
             <div className="flex items-center gap-2 mb-3">
               <MessageSquare size={14} className="text-apple-secondary" />
-              <h3 className="text-[13px] font-semibold text-white">Feedback for Shalini</h3>
+              <h3 className="text-[12px] font-semibold text-white">Feedback for Shalini</h3>
             </div>
             {myReflection.supervisorCommentShalini && !isEditingShalini ? (
               <div className="space-y-3">
-                <div className="relative pl-3.5 border-l-2 border-emerald-500/40 py-1 bg-emerald-500/[0.02] rounded-r-lg">
-                  <div className="text-[13.5px] text-white/90 leading-relaxed space-y-1">
+                <div className="relative pl-4 border-l-2 border-emerald-500/40 py-1 bg-emerald-500/[0.02] rounded-r-lg">
+                  <div className="text-[15px] text-white/90 leading-relaxed space-y-1">
                     {renderFormattedDescription(myReflection.supervisorCommentShalini)}
                   </div>
                 </div>
                 <div className="flex justify-end">
                   <button
                     onClick={() => setIsEditingShalini(true)}
-                    className="px-3 py-1 bg-white/[0.05] border border-white/[0.08] hover:bg-white/[0.08] text-white rounded text-[11px] font-semibold transition-colors cursor-pointer"
+                    className="px-3 py-1 bg-white/[0.05] border border-white/[0.08] hover:bg-white/[0.08] text-white rounded text-[12px] font-semibold transition-colors cursor-pointer"
                   >
                     Edit Feedback
                   </button>
@@ -551,17 +551,17 @@ export const WeeklyReview: React.FC = () => {
                   onChange={e => setSupervisorCommentShalini(e.target.value)}
                   style={{ minHeight: '60px', height: 'auto' }}
                   placeholder="Add comments for Shalini…"
-                  className="w-full px-3.5 py-2.5 bg-apple-base border border-apple-border rounded-lg text-[14px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] transition-colors outline-none resize-none leading-relaxed"
+                  className="w-full px-4 py-2 bg-apple-base border border-apple-border rounded-lg text-[15px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] transition-colors outline-none resize-none leading-relaxed"
                 />
                 <div className="flex justify-end gap-2 mt-2">
                   {myReflection.supervisorCommentShalini && (
                     <button onClick={() => handleCancelEdit('Shalini')}
-                      className="px-3 py-1.5 text-[12px] text-apple-secondary hover:text-white/85 rounded-md hover:bg-white/[0.04] transition-colors cursor-pointer">
+                      className="px-3 py-2 text-[12px] text-apple-secondary hover:text-white/85 rounded-md hover:bg-white/[0.04] transition-colors cursor-pointer">
                       Cancel
                     </button>
                   )}
                   <button onClick={() => handleSupervisorSubmitForPerson('Shalini')}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-white text-apple-base rounded-md text-[12px] font-semibold hover:bg-white/90 transition-colors cursor-pointer">
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-white text-apple-base rounded-md text-[12px] font-semibold hover:bg-white/90 transition-colors cursor-pointer">
                     <Sparkles size={12} /><span>Save feedback</span>
                   </button>
                 </div>
@@ -571,19 +571,19 @@ export const WeeklyReview: React.FC = () => {
           <div className="rounded-b-2xl border-x border-b border-white/[0.06] bg-white/[0.02] p-4 sm:p-5">
             <div className="flex items-center gap-2 mb-3">
               <MessageSquare size={14} className="text-apple-secondary" />
-              <h3 className="text-[13px] font-semibold text-white">Feedback for Miral</h3>
+              <h3 className="text-[12px] font-semibold text-white">Feedback for Miral</h3>
             </div>
             {myReflection.supervisorCommentMiral && !isEditingMiral ? (
               <div className="space-y-3">
-                <div className="relative pl-3.5 border-l-2 border-emerald-500/40 py-1 bg-emerald-500/[0.02] rounded-r-lg">
-                  <div className="text-[13.5px] text-white/90 leading-relaxed space-y-1">
+                <div className="relative pl-4 border-l-2 border-emerald-500/40 py-1 bg-emerald-500/[0.02] rounded-r-lg">
+                  <div className="text-[15px] text-white/90 leading-relaxed space-y-1">
                     {renderFormattedDescription(myReflection.supervisorCommentMiral)}
                   </div>
                 </div>
                 <div className="flex justify-end">
                   <button
                     onClick={() => setIsEditingMiral(true)}
-                    className="px-3 py-1 bg-white/[0.05] border border-white/[0.08] hover:bg-white/[0.08] text-white rounded text-[11px] font-semibold transition-colors cursor-pointer"
+                    className="px-3 py-1 bg-white/[0.05] border border-white/[0.08] hover:bg-white/[0.08] text-white rounded text-[12px] font-semibold transition-colors cursor-pointer"
                   >
                     Edit Feedback
                   </button>
@@ -597,17 +597,17 @@ export const WeeklyReview: React.FC = () => {
                   onChange={e => setSupervisorCommentMiral(e.target.value)}
                   style={{ minHeight: '60px', height: 'auto' }}
                   placeholder="Add comments for Miral…"
-                  className="w-full px-3.5 py-2.5 bg-apple-base border border-apple-border rounded-lg text-[14px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] transition-colors outline-none resize-none leading-relaxed"
+                  className="w-full px-4 py-2 bg-apple-base border border-apple-border rounded-lg text-[15px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] transition-colors outline-none resize-none leading-relaxed"
                 />
                 <div className="flex justify-end gap-2 mt-2">
                   {myReflection.supervisorCommentMiral && (
                     <button onClick={() => handleCancelEdit('Miral')}
-                      className="px-3 py-1.5 text-[12px] text-apple-secondary hover:text-white/85 rounded-md hover:bg-white/[0.04] transition-colors cursor-pointer">
+                      className="px-3 py-2 text-[12px] text-apple-secondary hover:text-white/85 rounded-md hover:bg-white/[0.04] transition-colors cursor-pointer">
                       Cancel
                     </button>
                   )}
                   <button onClick={() => handleSupervisorSubmitForPerson('Miral')}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-white text-apple-base rounded-md text-[12px] font-semibold hover:bg-white/90 transition-colors cursor-pointer">
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-white text-apple-base rounded-md text-[12px] font-semibold hover:bg-white/90 transition-colors cursor-pointer">
                     <Sparkles size={12} /><span>Save feedback</span>
                   </button>
                 </div>
@@ -628,12 +628,12 @@ export const WeeklyReview: React.FC = () => {
             <div className="rounded-2xl border border-emerald-400/20 bg-emerald-400/[0.04] p-4 sm:p-5">
               <div className="flex items-center gap-2 mb-2">
                 <MessageSquare size={14} className="text-emerald-400/70" />
-                <h3 className="text-[13px] font-semibold text-white">Supervisor Feedback</h3>
+                <h3 className="text-[12px] font-semibold text-white">Supervisor Feedback</h3>
               </div>
-              <p className="text-[14px] text-white/90 leading-relaxed">
+              <p className="text-[15px] text-white/90 leading-relaxed">
                 {myReflection[`supervisorComment${researcher}` as 'supervisorCommentMiral' | 'supervisorCommentShalini']}
               </p>
-              <p className="text-[10.5px] text-apple-tertiary mt-2 uppercase tracking-[0.12em] font-semibold">
+              <p className="text-[12px] text-apple-tertiary mt-2 uppercase tracking-[0.12em] font-semibold">
                 Dr. Chathura
               </p>
             </div>
@@ -644,10 +644,10 @@ export const WeeklyReview: React.FC = () => {
       {/* Recent weeks history (if there are any) — for context */}
       {allWeekIds.length > 1 && (
         <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
-          <p className="text-[10.5px] font-semibold tracking-[0.18em] uppercase text-apple-secondary mb-2.5">
+          <p className="text-[12px] font-semibold tracking-[0.18em] uppercase text-apple-secondary mb-2">
             Reflection history · {allWeekIds.length} {allWeekIds.length === 1 ? 'week' : 'weeks'} on record
           </p>
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-2">
             {allWeekIds.slice().reverse().map(wid => {
               const isCurrent = wid === currentWeekId;
               // Compute label for this week
@@ -661,7 +661,7 @@ export const WeeklyReview: React.FC = () => {
                     const currentIdx = allWeekIds.indexOf(currentWeekId);
                     setWeekOffset(prev => prev + (target - currentIdx));
                   }}
-                  className={`px-2.5 py-1 rounded-md text-[11px] font-mono tabular-nums transition-colors ${
+                  className={`px-3 py-1 rounded-md text-[12px] font-mono tabular-nums transition-colors ${
                     isCurrent
                       ? 'bg-white/[0.08] border border-white/[0.14] text-white'
                       : 'bg-white/[0.02] border border-white/[0.04] text-apple-secondary hover:bg-white/[0.04] hover:text-white/85'
@@ -701,21 +701,21 @@ const ReflectionColumn: React.FC<ReflectionColumnProps> = ({
   return (
     <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] overflow-hidden">
       {/* Column header */}
-      <header className="px-4 sm:px-5 py-3.5 flex items-center gap-3 border-b border-white/[0.05]">
+      <header className="px-4 sm:px-5 py-3 flex items-center gap-3 border-b border-white/[0.05]">
         <Avatar name={person} size="sm" />
         <div className="min-w-0">
-          <p className="text-[14px] font-semibold text-white tracking-tight leading-none">{person}</p>
-          <p className="text-[10.5px] text-apple-tertiary mt-1">{studyLabel}</p>
+          <p className="text-[15px] font-semibold text-white tracking-tight leading-none">{person}</p>
+          <p className="text-[12px] text-apple-tertiary mt-1">{studyLabel}</p>
         </div>
         <div className="flex-1" />
-        <span className="text-[10.5px] font-mono text-apple-tertiary tabular-nums">
+        <span className="text-[12px] font-mono text-apple-tertiary tabular-nums">
           {rollup.total} {rollup.total === 1 ? 'entry' : 'entries'}
         </span>
       </header>
 
       {/* Activity rollup */}
       {rollup.total > 0 && (
-        <div className="px-4 sm:px-5 py-3 border-b border-white/[0.04] space-y-1.5">
+        <div className="px-4 sm:px-5 py-3 border-b border-white/[0.04] space-y-2">
           {Object.entries(rollup.counts)
             .sort(([, a], [, b]) => b - a)
             .map(([cat, count]) => {
@@ -729,7 +729,7 @@ const ReflectionColumn: React.FC<ReflectionColumnProps> = ({
                       style={{ width: `${pct}%` }}
                     />
                   </div>
-                  <span className="text-[11.5px] text-white font-mono tabular-nums w-5 text-right shrink-0">
+                  <span className="text-[12px] text-white font-mono tabular-nums w-5 text-right shrink-0">
                     {count}
                   </span>
                 </div>
@@ -790,11 +790,11 @@ const Field: React.FC<FieldProps> = ({ label, placeholder, value, onChange, read
 
   return (
     <div>
-      <label className="block text-[11px] text-white/85 mb-1.5 font-semibold tracking-[0.02em] uppercase">
+      <label className="block text-[12px] text-white/85 mb-2 font-semibold tracking-[0.02em] uppercase">
         {label}
       </label>
       {readOnly ? (
-        <div className="w-full px-3.5 py-2.5 bg-white/[0.02] border border-white/[0.06] rounded-lg text-[13.5px] text-white/90 leading-relaxed min-h-[80px] space-y-1">
+        <div className="w-full px-4 py-2 bg-white/[0.02] border border-white/[0.06] rounded-lg text-[15px] text-white/90 leading-relaxed min-h-[80px] space-y-1">
           {renderFormattedDescription(value || '')}
         </div>
       ) : (
@@ -804,7 +804,7 @@ const Field: React.FC<FieldProps> = ({ label, placeholder, value, onChange, read
           onChange={e => onChange(e.target.value)}
           placeholder={placeholder}
           style={{ minHeight: '80px', height: 'auto' }}
-          className="w-full px-3.5 py-2.5 bg-white/[0.03] border border-white/[0.08] rounded-lg text-[13.5px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] focus:bg-white/[0.05] transition-colors outline-none resize-none leading-relaxed disabled:opacity-80"
+          className="w-full px-4 py-2 bg-white/[0.03] border border-white/[0.08] rounded-lg text-[15px] text-white/95 placeholder:text-apple-tertiary focus:border-white/[0.2] focus:bg-white/[0.05] transition-colors outline-none resize-none leading-relaxed disabled:opacity-80"
         />
       )}
     </div>

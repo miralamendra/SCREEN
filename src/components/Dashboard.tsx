@@ -183,7 +183,7 @@ export const Dashboard: React.FC = () => {
             alt="SCREEN"
             className="w-12 h-12 object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.45)] shrink-0 translate-y-[1.5px]"
           />
-          <div className="w-[1px] h-3.5 bg-white/15 shrink-0 translate-y-[1.5px]" />
+          <div className="w-[1px] h-3 bg-white/15 shrink-0 translate-y-[1.5px]" />
           <span className="text-[12px] font-medium text-white truncate leading-none">
             {profileMeta?.subtitle}
           </span>
@@ -211,8 +211,8 @@ export const Dashboard: React.FC = () => {
           {profileMenuOpen && menuAnchor === 'bottom' && (
             <>
               <div className="fixed inset-0 z-30" onClick={() => setProfileMenuOpen(false)} />
-              <div className="absolute left-2 right-2 bottom-full mb-1.5 z-40 rounded-lg bg-apple-elevated/98 backdrop-blur-xl border border-white/[0.08] shadow-[0_12px_32px_rgba(0,0,0,0.5)] py-1 fade-in">
-                <p className="px-3 py-1.5 text-[10px] font-medium tracking-[0.18em] uppercase text-apple-tertiary">
+              <div className="absolute left-2 right-2 bottom-full mb-2 z-40 rounded-lg bg-apple-elevated/98 backdrop-blur-xl border border-white/[0.08] shadow-[0_12px_32px_rgba(0,0,0,0.5)] py-1 fade-in">
+                <p className="px-3 py-2 text-[12px] font-medium tracking-[0.18em] uppercase text-apple-tertiary">
                   Switch profile
                 </p>
                 {(Object.keys(PROFILE_META) as Role[]).map(r => {
@@ -223,12 +223,12 @@ export const Dashboard: React.FC = () => {
                     <button
                       key={r}
                       onClick={() => switchTo(r, dest)}
-                      className="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-white/[0.04] transition-colors text-left"
+                      className="w-full flex items-center gap-2 px-3 py-2 hover:bg-white/[0.04] transition-colors text-left"
                     >
                       <Avatar name={meta.avatar} size="sm" />
                       <div className="flex-1 min-w-0">
-                        <div className="text-[12.5px] text-white/90 font-medium truncate">{meta.label}</div>
-                        <div className="text-[10.5px] text-white/55 truncate">{meta.subtitle}</div>
+                        <div className="text-[12px] text-white/90 font-medium truncate">{meta.label}</div>
+                        <div className="text-[12px] text-white/55 truncate">{meta.subtitle}</div>
                       </div>
                       {active && <Check size={12} className="text-emerald-400 shrink-0" />}
                     </button>
@@ -237,30 +237,30 @@ export const Dashboard: React.FC = () => {
                 <div className="h-px bg-white/[0.06] my-1" />
                 <button
                   onClick={() => { setRole(null); navigate('/'); }}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-white/[0.04] transition-colors text-left text-apple-gray hover:text-white"
+                  className="w-full flex items-center gap-2 px-3 py-2 hover:bg-white/[0.04] transition-colors text-left text-apple-gray hover:text-white"
                 >
                   <LogOut size={13} />
-                  <span className="text-[12.5px]">Sign out</span>
+                  <span className="text-[12px]">Sign out</span>
                 </button>
               </div>
             </>
           )}
           <button
             onClick={() => { setProfileMenuOpen(o => !o); setMenuAnchor('bottom'); }}
-            className="w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-[12px] text-apple-secondary hover:text-white/85 hover:bg-white/[0.04] transition-colors"
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-md text-[12px] text-apple-secondary hover:text-white/85 hover:bg-white/[0.04] transition-colors"
           >
             <ArrowLeftRight size={13} />
             <span>Switch account</span>
           </button>
           <button
             onClick={() => setShortcutsOpen(true)}
-            className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-[12px] text-apple-secondary hover:text-white/85 hover:bg-white/[0.04] transition-colors"
+            className="w-full flex items-center justify-between px-3 py-2 rounded-md text-[12px] text-apple-secondary hover:text-white/85 hover:bg-white/[0.04] transition-colors"
           >
-            <span className="inline-flex items-center gap-2.5">
+            <span className="inline-flex items-center gap-2">
               <Keyboard size={13} />
               <span>Shortcuts</span>
             </span>
-            <kbd className="px-1 py-0.5 rounded text-[10px] font-mono bg-white/[0.04] border border-white/[0.06]">?</kbd>
+            <kbd className="px-1 py-0.5 rounded text-[12px] font-mono bg-white/[0.04] border border-white/[0.06]">?</kbd>
           </button>
         </div>
       </aside>
@@ -271,7 +271,7 @@ export const Dashboard: React.FC = () => {
           <div className="flex items-center gap-1">
             <button
               onClick={() => navigate('/')}
-              className="flex items-center gap-1.5 text-white/85 hover:opacity-80 transition-opacity"
+              className="flex items-center gap-2 text-white/85 hover:opacity-80 transition-opacity"
               aria-label="Go to Landing Page"
             >
               <img
@@ -295,15 +295,15 @@ export const Dashboard: React.FC = () => {
           <span className="text-[12px] text-apple-gray truncate max-w-[40vw]">
             {navItems.find(n => n.id === activeTab)?.label}
           </span>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             {syncMode === 'synced' ? (
-              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <span className="w-1.5 h-2 rounded-full bg-emerald-400 animate-pulse" />
                 Synced
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20" title="Running in local storage fallback mode">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20" title="Running in local storage fallback mode">
+                <span className="w-1.5 h-2 rounded-full bg-amber-400" />
                 Local
               </span>
             )}
@@ -319,7 +319,7 @@ export const Dashboard: React.FC = () => {
         {mobileNavOpen && (
           <div className="border-t border-white/[0.06] bg-apple-base max-h-[70vh] overflow-y-auto">
             <div className="px-3 py-2 border-b border-white/[0.04]">
-              <p className="text-[10px] font-medium tracking-[0.18em] uppercase text-apple-tertiary px-2 mb-1">
+              <p className="text-[12px] font-medium tracking-[0.18em] uppercase text-apple-tertiary px-2 mb-1">
                 Profiles
               </p>
               {(Object.keys(PROFILE_META) as Role[]).map(r => {
@@ -330,12 +330,12 @@ export const Dashboard: React.FC = () => {
                   <button
                     key={r}
                     onClick={() => switchTo(r, dest)}
-                    className="w-full flex items-center gap-2.5 px-2 py-2 rounded-md hover:bg-white/[0.04] transition-colors text-left"
+                    className="w-full flex items-center gap-2 px-2 py-2 rounded-md hover:bg-white/[0.04] transition-colors text-left"
                   >
                     <Avatar name={meta.avatar} size="xs" />
                     <div className="flex-1 min-w-0">
-                      <div className="text-[12.5px] text-white/95 font-medium truncate leading-tight">{meta.label}</div>
-                      <div className="text-[10.5px] text-white/55 truncate leading-tight mt-0.5">{meta.subtitle}</div>
+                      <div className="text-[12px] text-white/95 font-medium truncate leading-tight">{meta.label}</div>
+                      <div className="text-[12px] text-white/55 truncate leading-tight mt-0.5">{meta.subtitle}</div>
                     </div>
                     {active && <Check size={11} className="text-emerald-400 shrink-0" />}
                   </button>
@@ -352,7 +352,7 @@ export const Dashboard: React.FC = () => {
         {/* Top bar */}
         <header className="hidden md:flex h-12 items-center justify-between px-3 sm:px-5 border-b border-white/[0.06] shrink-0 bg-apple-base/80 backdrop-blur-sm sticky top-0 z-20">
           {/* Breadcrumb */}
-          <div className="flex items-center gap-2 min-w-0 text-[13px]">
+          <div className="flex items-center gap-2 min-w-0 text-[12px]">
             {profileMeta && <Avatar name={profileMeta.avatar} size="sm" />}
             <span 
               onClick={() => navigate('/')}
@@ -366,15 +366,15 @@ export const Dashboard: React.FC = () => {
             <span className="text-white/95 font-medium truncate">
               {navItems.find(n => n.id === activeTab)?.label || 'Overview'}
             </span>
-            <div className="flex items-center gap-1.5 ml-3 shrink-0">
+            <div className="flex items-center gap-2 ml-3 shrink-0">
               {syncMode === 'synced' ? (
-                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9.5px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[12px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  <span className="w-1.5 h-2 rounded-full bg-emerald-400 animate-pulse" />
                   Synced
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9.5px] font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20" title="Running in local storage fallback mode">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[12px] font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20" title="Running in local storage fallback mode">
+                  <span className="w-1.5 h-2 rounded-full bg-amber-400" />
                   Local Mode
                 </span>
               )}
@@ -382,14 +382,14 @@ export const Dashboard: React.FC = () => {
           </div>
 
           {/* Right: search trigger + new entry */}
-          <div className="flex items-center gap-1.5 shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={() => setPaletteOpen(true)}
-              className="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-md text-[12px] text-apple-secondary hover:text-white/85 hover:bg-white/[0.04] transition-colors"
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-md text-[12px] text-apple-secondary hover:text-white/85 hover:bg-white/[0.04] transition-colors"
             >
               <Search size={12} />
               <span>Search</span>
-              <kbd className="hidden lg:inline-flex items-center gap-0.5 ml-1 px-1.5 py-0.5 rounded text-[10px] font-mono bg-white/[0.04] border border-white/[0.06]">
+              <kbd className="hidden lg:inline-flex items-center gap-0.5 ml-1 px-2 py-0.5 rounded text-[12px] font-mono bg-white/[0.04] border border-white/[0.06]">
                 {isMac ? '⌘' : 'Ctrl'} K
               </kbd>
             </button>
@@ -415,7 +415,7 @@ export const Dashboard: React.FC = () => {
               >
                 <Plus size={12} strokeWidth={2.5} />
                 <span>New entry</span>
-                <kbd className="hidden lg:inline-flex items-center px-1 py-0.5 rounded text-[10px] font-mono bg-white/10 text-white/70 ml-1">
+                <kbd className="hidden lg:inline-flex items-center px-1 py-0.5 rounded text-[12px] font-mono bg-white/10 text-white/70 ml-1">
                   C
                 </kbd>
               </button>
@@ -424,7 +424,7 @@ export const Dashboard: React.FC = () => {
         </header>
 
         {/* Mobile top bar (right-side action) */}
-        <div className="md:hidden sticky top-12 z-20 bg-apple-base/90 backdrop-blur-sm border-b border-white/[0.06] flex items-center justify-end gap-1.5 px-3 h-10">
+        <div className="md:hidden sticky top-12 z-20 bg-apple-base/90 backdrop-blur-sm border-b border-white/[0.06] flex items-center justify-end gap-2 px-3 h-10">
           <button
             onClick={() => setPaletteOpen(true)}
             className="p-1.5 rounded-md text-apple-secondary hover:text-white/85 hover:bg-white/[0.04] transition-colors"
