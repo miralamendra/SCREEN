@@ -87,3 +87,236 @@ Design Review Checklist before finishing:
 ✓ Is accessibility considered?
 
 Final Principle: SCREEN should feel Quiet, Intelligent, Precise, Human. Create software users trust after using it for five years.
+
+---
+
+# SCREEN UX Foundation
+# Typography, Spacing & Visual Psychology Rules
+
+## Purpose
+SCREEN is designed for researchers who work with complex information.
+The interface must reduce cognitive effort and improve comprehension.
+Every choice of font size, spacing, width, alignment, and density must support human perception.
+
+---
+
+# 1. Typography Psychology
+
+## Humans do not read interfaces first
+Users scan before reading.
+The eye searches for:
+1. What is this?
+2. What matters?
+3. What changed?
+4. What action is possible?
+
+Typography creates this path.
+A good interface can communicate hierarchy even if users cannot read the words.
+
+---
+
+# 2. Visual Hierarchy Principle
+
+Every screen must have:
+
+### Primary Layer
+The most important information (e.g., page title, research name, critical status).
+- Largest size, highest contrast, strongest weight.
+
+### Secondary Layer
+Supporting explanation (e.g., description, context, summary).
+- Smaller, softer contrast.
+
+### Tertiary Layer
+Metadata (e.g., timestamps, author, categories).
+- Smallest, lowest contrast.
+
+Never make all text visually equal.
+
+---
+
+# 3. Font Size Psychology
+
+## Large Text (32px+)
+- **Purpose**: Orientation. The brain recognizes large text first.
+- **Use for**: Page titles, major statements, landing hero.
+- **Psychological effect**: Confidence, importance, direction.
+- **Rule**: Do not use large text everywhere. If everything is large, nothing feels important.
+
+## Page Title (36px)
+- **Weight**: 600-650
+- **Line height**: 44px
+- **Reason**: Large enough for orientation, small enough for productivity.
+
+## Section Heading (28px)
+- **Weight**: 600
+- **Line height**: 36px
+- **Purpose**: Creates mental chapters.
+
+## Subsection Heading (22px)
+- **Weight**: 600
+- **Line height**: 30px
+- **Purpose**: Organizes related information.
+
+## Body Text (15-17px)
+- **Why**: Research interfaces contain reading.
+- **Below 14px**: Increases eye strain, slows reading, reduces accessibility.
+- **Above 18px**: Reduces information density.
+- **Optimal**: 15-17px.
+
+## Metadata Text (12-13px)
+- **Purpose**: Information exists but should not compete (e.g., "Updated yesterday", "Created by Miral", "Last synchronized").
+
+---
+
+# 4. Line Height Psychology
+Line height controls reading comfort.
+- **Too small**: Text feels crowded. Brain spends more effort separating lines.
+- **Too large**: Relationships between lines become weak.
+
+## UI Text
+- **Font**: 15px
+- **Line height**: 24px (Ratio: 1.6)
+
+## Long Reading Content
+- **Font**: 17px
+- **Line height**: 28px (Ratio: 1.65)
+Research documents should prioritize readability.
+
+---
+
+# 5. Letter Spacing Psychology
+Large text needs tighter spacing.
+- **Reason**: Large letters create more visual separation.
+- **36px title**: -0.02em
+- **72px hero**: -0.04em
+- **Body**: 0
+- **Small labels**: +0.02em
+
+---
+
+# 6. Spacing Psychology
+Whitespace is not empty. Whitespace creates:
+- grouping
+- importance
+- calmness
+- comprehension
+
+A crowded interface forces the brain to work harder.
+
+---
+
+# 7. The Spacing Hierarchy
+
+## Micro Spacing (4px - 8px)
+- **Purpose**: Elements that belong together (e.g., Icon + text, Button icon + label). The brain sees them as one object.
+
+## Small Spacing (12px - 16px)
+- **Purpose**: Inside components (e.g., Input padding, Menu items, Small cards).
+
+## Medium Spacing (24px - 32px)
+- **Purpose**: Separate related groups (e.g., Title + description, Sections inside pages).
+
+## Large Spacing (40px - 64px)
+- **Purpose**: Separate different ideas (e.g., Research sections, Dashboard areas).
+
+## Extra Large Spacing (80px+)
+- **Purpose**: Create importance (e.g., Landing page sections, Major transitions).
+
+---
+
+# 8. The Law of Proximity
+Objects close together are perceived as related.
+- **Good**:
+  Title
+  Description
+  Action
+  (Brain groups them)
+- **Bad**:
+  Title
+  
+  [Large empty space]
+  
+  Description
+  (Relationship becomes unclear)
+
+---
+
+# 9. Content Width Psychology
+Humans cannot comfortably read unlimited width. Wide text causes slower scanning, losing position, and reduced comprehension.
+- **Reading width (Max 720px)**: Ideal for reports, notes, reflections.
+- **Application width (Max 1280px)**: Ideal for dashboards, tables, workflows.
+
+---
+
+# 10. Screen Composition Psychology
+Every screen has three zones:
+- **Zone 1 (Orientation)**: Top area (page title, context, primary action). Answers: *"Where am I?"*
+- **Zone 2 (Work Area)**: Main content. Answers: *"What am I doing?"*
+- **Zone 3 (Supporting Information)**: Secondary details. Answers: *"What else do I need?"*
+
+---
+
+# 11. Above The Fold Psychology
+Important information must appear without scrolling. First viewport should contain identity, purpose, current state, and primary action. Do not force users to search.
+
+---
+
+# 12. Density Psychology
+SCREEN uses three density modes:
+- **Dense (8-12px spacing)**: Fast scanning (tables, command palette, navigation).
+- **Comfortable (16-24px spacing)**: Daily work default (workspace, research entries).
+- **Spacious (40-96px spacing)**: Emotional impact (landing page, important transition moments).
+
+---
+
+# 13. Alignment Psychology
+Humans trust aligned objects. Misalignment creates subconscious discomfort.
+- Titles align with content.
+- Buttons align with actions.
+- Tables align numbers.
+- Sections share common edges.
+- Avoid random placement.
+
+---
+
+# 14. Fit-To-Screen Rules
+The interface must respect the user's viewport.
+
+## Desktop (1280px+ width)
+- Content Max: 1280px
+- Side margins: 32-48px
+
+## Laptop (1024-1279px)
+- Reduce spacing, columns, and secondary information.
+
+## Tablet (768-1023px)
+- Collapse secondary panels and extra navigation.
+
+## Mobile (320-767px)
+- Margin padding: 16px
+- Touch targets: Min 44px
+- Typography reduction: Desktop title 36px → Mobile title 28px
+
+---
+
+# 15. Visual Balance Rule
+Every screen should feel balanced. Avoid too much information at top, visual weight inequality, or too much empty space. The eye should move naturally:
+`Title` → `Context` → `Action` → `Content` → `Details`
+
+---
+
+# 16. Cognitive Comfort Checklist
+Before approving a page, ask:
+- Can users understand the purpose in 5 seconds?
+- Can users find the main action immediately?
+- Is important information visually dominant?
+- Is supporting information quiet?
+- Does the layout breathe?
+- Does it feel calm?
+If not, redesign.
+
+---
+
+## Final Rule
+Good design is not making everything visible. Good design is making the right things visible at the right time.
