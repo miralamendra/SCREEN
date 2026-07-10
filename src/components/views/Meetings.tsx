@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useWorkspace } from '../../context/WorkspaceContext';
-import { Download, Plus, ExternalLink, MapPin, CalendarDays, ChevronLeft, ChevronRight, Clock } from 'lucide-react';
+import { Download, Plus, ExternalLink, MapPin, CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useToast } from '../ui/Toast';
 import { useLocation } from 'react-router-dom';
 
@@ -506,18 +506,7 @@ export const Meetings: React.FC<MeetingsProps> = ({ newMeetingTrigger }) => {
                                 <span className="text-[12px] text-apple-secondary">
                                   {meet.attendees.map(getPersonLabel).join(', ')}
                                 </span>
-                                {meet.time && (
-                                  <>
-                                    <span className="text-apple-tertiary text-[10px]">·</span>
-                                    <span className="text-[12px] text-white/90 inline-flex items-center gap-1">
-                                      <Clock size={11} className="text-apple-tertiary" />
-                                      <span>
-                                        {formatTime12h(meet.time)}
-                                        {meet.endTime ? ` - ${formatTime12h(meet.endTime)}` : ''}
-                                      </span>
-                                    </span>
-                                  </>
-                                )}
+
                                 {meet.locationLink && !isUrl && (
                                   <>
                                     <span className="text-apple-tertiary text-[10px]">·</span>
