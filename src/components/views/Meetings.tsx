@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useWorkspace } from '../../context/WorkspaceContext';
-import { Download, Plus, ExternalLink, MapPin, CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Download, Plus, ExternalLink, MapPin, CalendarDays, ChevronLeft, ChevronRight, Clock } from 'lucide-react';
 import { useToast } from '../ui/Toast';
 import { useLocation } from 'react-router-dom';
 
@@ -72,6 +72,18 @@ import { ManageCategoriesModal } from '../ui/ManageCategoriesModal';
 
 const ATTENDEES = ['Shalini', 'Miral', 'Dr. Chathura'] as const;
 
+const formatTime12h = (timeStr: string) => {
+  if (!timeStr) return '';
+  const [hoursStr, minutesStr] = timeStr.split(':');
+  let hours = parseInt(hoursStr, 10);
+  const minutes = minutesStr || '00';
+  if (isNaN(hours)) return timeStr;
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
+  return `${hours}:${minutes} ${ampm}`;
+};
+
 interface MeetingsProps {
   newMeetingTrigger?: number;
 }
@@ -104,6 +116,7 @@ export const Meetings: React.FC<MeetingsProps> = ({ newMeetingTrigger }) => {
   const [category, setCategory] = useState(categories[0]?.name || '');
   const [locationLink, setLocationLink] = useState('');
   const [date, setDate] = useState((() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; })());
+  const [time, setTime] = useState('10:00');
   const [attendees, setAttendees] = useState<('Miral' | 'Shalini' | 'Dr. Chathura')[]>([]);
   const [outcome, setOutcome] = useState('');
 
@@ -146,6 +159,7 @@ export const Meetings: React.FC<MeetingsProps> = ({ newMeetingTrigger }) => {
     setOutcome('');
     setAttendees([]);
     setDate((() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; })());
+    setTime('10:00');
     setIsOpen(false);
   };
 
@@ -155,6 +169,7 @@ export const Meetings: React.FC<MeetingsProps> = ({ newMeetingTrigger }) => {
 
     addMeeting({
       date,
+      time,
       category,
       title: title.trim(),
       locationLink: locationLink.trim(),
@@ -179,8 +194,10 @@ export const Meetings: React.FC<MeetingsProps> = ({ newMeetingTrigger }) => {
   // Sort meetings chronologically: upcoming (asc) → past (desc)
   const now = Date.now();
   const sorted = [...myMeetings].sort((a, b) => {
-    const ta = new Date(a.date).getTime();
-    const tb = new Date(b.date).getTime();
+    const dateA = a.time ? `${a.date}T${a.time}:00` : `${a.date}T00:00:00`;
+    const dateB = b.time ? `${b.date}T${b.time}:00` : `${b.date}T00:00:00`;
+    const ta = new Date(dateA).getTime();
+    const tb = new Date(dateB).getTime();
     const aFuture = ta >= now;
     const bFuture = tb >= now;
     if (aFuture && !bFuture) return -1;
@@ -243,7 +260,7 @@ export const Meetings: React.FC<MeetingsProps> = ({ newMeetingTrigger }) => {
             </p>
           </div>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
                 <label className="block text-[10.5px] font-semibold tracking-[0.08em] uppercase text-white/80 mb-1.5">
                   Date
@@ -253,6 +270,18 @@ export const Meetings: React.FC<MeetingsProps> = ({ newMeetingTrigger }) => {
                   required
                   value={date}
                   onChange={e => setDate(e.target.value)}
+                  className="w-full px-3 py-2 bg-white/[0.04] border border-white/[0.08] rounded-md text-[14px] text-white/95 focus:border-white/[0.2] focus:bg-white/[0.06] transition-colors outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-[10.5px] font-semibold tracking-[0.08em] uppercase text-white/80 mb-1.5">
+                  Time
+                </label>
+                <input
+                  type="time"
+                  required
+                  value={time}
+                  onChange={e => setTime(e.target.value)}
                   className="w-full px-3 py-2 bg-white/[0.04] border border-white/[0.08] rounded-md text-[14px] text-white/95 focus:border-white/[0.2] focus:bg-white/[0.06] transition-colors outline-none"
                 />
               </div>
@@ -427,58 +456,71 @@ export const Meetings: React.FC<MeetingsProps> = ({ newMeetingTrigger }) => {
                         id={`meeting-row-${meet.id}`}
                         className="rounded-lg border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/[0.1] p-4 transition-colors"
                       >
-                        <div className="flex items-start gap-3">
-                          <div 
-                            className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" 
-                            style={{ backgroundColor: categories.find(c => c.name === meet.category)?.color || '#9ca3af' }} 
-                          />
-                          <div className="flex-1 min-w-0">
-                            <p className="text-[14.5px] text-white font-medium leading-snug">
-                              {meet.title}
-                            </p>
-                            <div className="flex items-center gap-2 mt-2 flex-wrap">
-                              <span
-                                className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-md border uppercase tracking-[0.06em]"
-                                style={{ 
-                                  color: categories.find(c => c.name === meet.category)?.color || '#9ca3af',
-                                  borderColor: categories.find(c => c.name === meet.category)?.color || '#9ca3af',
-                                  backgroundColor: (categories.find(c => c.name === meet.category)?.color || '#9ca3af') + '1A'
-                                }}
-                              >
-                                {meet.category}
-                              </span>
-                              <span className="text-apple-tertiary text-[10px]">·</span>
-                              <span className="text-[12px] text-apple-secondary">
-                                {meet.attendees.map(getPersonLabel).join(', ')}
-                              </span>
-                              {meet.locationLink && (
-                                <>
-                                  <span className="text-apple-tertiary text-[10px]">·</span>
-                                  {isUrl ? (
-                                    <a
-                                      href={meet.locationLink}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 border border-emerald-500/30 transition-colors text-[12px] font-semibold"
-                                    >
-                                      <ExternalLink size={12} />
-                                      <span>Join Meeting</span>
-                                    </a>
-                                  ) : (
+                        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                          <div className="flex items-start gap-3 flex-1 min-w-0">
+                            <div 
+                              className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" 
+                              style={{ backgroundColor: categories.find(c => c.name === meet.category)?.color || '#9ca3af' }} 
+                            />
+                            <div className="flex-1 min-w-0">
+                              <p className="text-[14.5px] text-white font-medium leading-snug">
+                                {meet.title}
+                              </p>
+                              <div className="flex items-center gap-2 mt-2 flex-wrap">
+                                <span
+                                  className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-md border uppercase tracking-[0.06em]"
+                                  style={{ 
+                                    color: categories.find(c => c.name === meet.category)?.color || '#9ca3af',
+                                    borderColor: categories.find(c => c.name === meet.category)?.color || '#9ca3af',
+                                    backgroundColor: (categories.find(c => c.name === meet.category)?.color || '#9ca3af') + '1A'
+                                  }}
+                                >
+                                  {meet.category}
+                                </span>
+                                <span className="text-apple-tertiary text-[10px]">·</span>
+                                <span className="text-[12px] text-apple-secondary">
+                                  {meet.attendees.map(getPersonLabel).join(', ')}
+                                </span>
+                                {meet.time && (
+                                  <>
+                                    <span className="text-apple-tertiary text-[10px]">·</span>
+                                    <span className="text-[12px] text-white/90 inline-flex items-center gap-1 font-mono">
+                                      <Clock size={11} className="text-apple-tertiary" />
+                                      <span>{formatTime12h(meet.time)}</span>
+                                    </span>
+                                  </>
+                                )}
+                                {meet.locationLink && !isUrl && (
+                                  <>
+                                    <span className="text-apple-tertiary text-[10px]">·</span>
                                     <span className="text-[12px] text-apple-secondary inline-flex items-center gap-1">
                                       <MapPin size={10} />
                                       <span>{meet.locationLink}</span>
                                     </span>
-                                  )}
-                                </>
+                                  </>
+                                )}
+                              </div>
+                              {meet.outcome && (
+                                <div className="mt-3 pl-3 border-l-2 border-white/[0.12] space-y-1">
+                                  {renderFormattedDescription(meet.outcome)}
+                                </div>
                               )}
                             </div>
-                            {meet.outcome && (
-                              <div className="mt-3 pl-3 border-l-2 border-white/[0.12] space-y-1">
-                                {renderFormattedDescription(meet.outcome)}
-                              </div>
-                            )}
                           </div>
+                          
+                          {meet.locationLink && isUrl && (
+                            <div className="self-end sm:self-start shrink-0">
+                              <a
+                                href={meet.locationLink}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 border border-emerald-500/30 transition-colors text-[12px] font-semibold"
+                              >
+                                <ExternalLink size={12} />
+                                <span>Join Meeting</span>
+                              </a>
+                            </div>
+                          )}
                         </div>
                       </div>
                     );

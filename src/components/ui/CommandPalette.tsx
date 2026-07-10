@@ -23,6 +23,18 @@ interface PaletteItem {
   run: () => void;
 }
 
+const formatTime12h = (timeStr: string) => {
+  if (!timeStr) return '';
+  const [hoursStr, minutesStr] = timeStr.split(':');
+  let hours = parseInt(hoursStr, 10);
+  const minutes = minutesStr || '00';
+  if (isNaN(hours)) return timeStr;
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+  return `${hours}:${minutes} ${ampm}`;
+};
+
 export const CommandPalette: React.FC<CommandPaletteProps> = ({
   open, onClose, onOpenNewLog, onOpenNewMeeting
 }) => {
@@ -82,14 +94,17 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
     // Dynamic items: meetings (upcoming only)
     const now = Date.now();
     data.meetings
-      .filter(m => new Date(m.date).getTime() >= now - 86400000)
+      .filter(m => {
+        const dateStr = m.time ? `${m.date}T${m.time}:00` : `${m.date}T23:59:59`;
+        return new Date(dateStr).getTime() >= now - 86400000;
+      })
       .slice(0, 6)
       .forEach(m => {
         pages.push({
           id: `m-${m.id}`,
           group: 'Pages',
           label: m.title,
-          hint: new Date(m.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
+          hint: `${new Date(m.date + 'T00:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}${m.time ? ' ' + formatTime12h(m.time) : ''}`,
           icon: Hash,
           run: go('/workspace/meetings')
         });

@@ -46,6 +46,7 @@ export interface QuarterRoadmap {
 export interface MeetingEvent {
   id: string;
   date: string; // YYYY-MM-DD
+  time?: string; // HH:MM
   category: string;
   title: string;
   locationLink: string;
@@ -106,6 +107,7 @@ const generateRecurringMeetings = (): MeetingEvent[] => {
     {
       id: 'meet-rec-mon',
       date: getFormattedDate(monday, 0),
+      time: '10:00',
       category: 'Supervisor Meeting',
       title: 'SCREEN- Dilmah research project (Monday)',
       locationLink: 'https://meet.google.com/vmf-znku-wdt',
@@ -115,6 +117,7 @@ const generateRecurringMeetings = (): MeetingEvent[] => {
     {
       id: 'meet-rec-wed',
       date: getFormattedDate(monday, 2),
+      time: '14:00',
       category: 'Supervisor Meeting',
       title: 'SCREEN- Dilmah research project (Wednesday)',
       locationLink: 'https://meet.google.com/ita-pspp-pge',
@@ -124,6 +127,7 @@ const generateRecurringMeetings = (): MeetingEvent[] => {
     {
       id: 'meet-rec-fri',
       date: getFormattedDate(monday, 4),
+      time: '16:00',
       category: 'Supervisor Meeting',
       title: 'SCREEN- Dilmah research project (Friday)',
       locationLink: 'https://meet.google.com/cqa-razj-gpv',

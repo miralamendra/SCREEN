@@ -124,15 +124,22 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           quarter: d.quarter
         }));
 
-        const meetings: MeetingEvent[] = (meetsRes.data || []).map(m => ({
-          id: m.id,
-          date: m.date,
-          category: m.category,
-          title: m.title,
-          locationLink: m.location_link || '',
-          attendees: m.attendees || [],
-          outcome: m.outcome || ''
-        }));
+        const meetings: MeetingEvent[] = (meetsRes.data || []).map(m => {
+          const dateStr = m.date || '';
+          const parts = dateStr.includes('T') ? dateStr.split('T') : dateStr.split(' ');
+          const datePart = parts[0] || '';
+          const timePart = parts[1] || '';
+          return {
+            id: m.id,
+            date: datePart,
+            time: timePart ? timePart.slice(0, 5) : '',
+            category: m.category,
+            title: m.title,
+            locationLink: m.location_link || '',
+            attendees: m.attendees || [],
+            outcome: m.outcome || ''
+          };
+        });
 
         const tasks: TaskItem[] = (tasksRes.data && tasksRes.data.length > 0 ? tasksRes.data : initialWorkspaceData.tasks).map((t: any) => ({
           id: t.id,
@@ -471,7 +478,7 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     if (syncMode === 'synced' && supabase) {
       await supabase.from('meetings').insert([{
         id: newMeeting.id,
-        date: meeting.date,
+        date: meeting.time ? `${meeting.date} ${meeting.time}:00` : meeting.date,
         category: meeting.category,
         title: meeting.title,
         location_link: meeting.locationLink || null,
@@ -514,9 +521,10 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         r.activities.join('; ')
       ]);
     } else if (section === 'meetings') {
-      headers = ['Date', 'Category', 'Title', 'Location/Link', 'Attendees', 'Outcome'];
+      headers = ['Date', 'Time', 'Category', 'Title', 'Location/Link', 'Attendees', 'Outcome'];
       rows = data.meetings.map(m => [
         m.date,
+        m.time || '',
         m.category,
         m.title,
         m.locationLink,

@@ -15,6 +15,18 @@ const localDateStr = (d: Date = new Date()) => {
   return `${y}-${m}-${day}`;
 };
 
+const formatTime12h = (timeStr: string) => {
+  if (!timeStr) return '';
+  const [hoursStr, minutesStr] = timeStr.split(':');
+  let hours = parseInt(hoursStr, 10);
+  const minutes = minutesStr || '00';
+  if (isNaN(hours)) return timeStr;
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+  return `${hours}:${minutes} ${ampm}`;
+};
+
 const todayStr = () => localDateStr();
 
 const getWeekBounds = () => {
@@ -266,9 +278,17 @@ export const Overview: React.FC = () => {
   const inProgressCount = deliverables.filter(d => d.status === 'In progress').length;
 
   const nextMeeting = useMemo(() => {
+    const now = Date.now();
     return [...meetings]
-      .filter(m => new Date(m.date).getTime() >= Date.now())
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())[0] ?? null;
+      .filter(m => {
+        const dateStr = m.time ? `${m.date}T${m.time}:00` : `${m.date}T23:59:59`;
+        return new Date(dateStr).getTime() >= now;
+      })
+      .sort((a, b) => {
+        const dateA = a.time ? `${a.date}T${a.time}:00` : `${a.date}T00:00:00`;
+        const dateB = b.time ? `${b.date}T${b.time}:00` : `${b.date}T00:00:00`;
+        return new Date(dateA).getTime() - new Date(dateB).getTime();
+      })[0] ?? null;
   }, [meetings]);
 
 
@@ -310,7 +330,7 @@ export const Overview: React.FC = () => {
             icon: CalendarDays,
             label: 'Next meeting',
             value: nextMeeting
-              ? new Date(nextMeeting.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+              ? `${new Date(nextMeeting.date + 'T00:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}${nextMeeting.time ? ' @ ' + formatTime12h(nextMeeting.time) : ''}`
               : '-',
             sub: nextMeeting?.title?.slice(0, 32) ?? 'Nothing scheduled',
             tone: 'default' as const
